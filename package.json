@@ -1,6 +1,6 @@
 {
   "name": "ddg-web-search",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A comprehensive package for searching the web and fetching web content programmatically, through a CLI interface, or through a Model Context Protocol (MCP) server.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,7 +26,8 @@
     "mcp": "npx ts-node src/mcp.ts",
     "mcp:build": "npm run build && node dist/mcp.js",
     "mcp:http": "npx ts-node src/mcp.ts --transport http",
-    "mcp:http:build": "npm run build && node dist/mcp.js --transport http"
+    "mcp:http:build": "npm run build && node dist/mcp.js --transport http",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",

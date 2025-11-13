@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation - DDG Web Search</title>
+  <meta name="description" content="Complete API documentation for the DDG Web Search package.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/docs.styles.css">
+  <link rel="icon" type="image/x-icon"
+    href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iI0RFNTgzMyIvPgo8cGF0aCBkPSJNOCAxNkMxMiAxNiAxNiAxMiAxNiA4QzE2IDEyIDIwIDE2IDI0IDE2QzIwIDE2IDE2IDIwIDE2IDI0QzE2IDIwIDEyIDE2IDggMTZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K">
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <span class="logo-icon">🦆</span>
+        <span class="logo-text">DDG Web Search</span>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#features" class="nav-link">Features</a></li>
+        <li><a href="index.html#installation" class="nav-link">Installation</a></li>
+        <li><a href="index.html#usage" class="nav-link">Usage</a></li>
+        <li><a href="index.html#api-overview" class="nav-link">API</a></li>
+        <li><a href="examples.html" class="nav-link">Examples</a></li>
+        <li><a href="docs.html" class="nav-link">Documentation</a></li>
+        <li><a href="https://github.com/lucivuc/ddg-web-search" class="nav-link github-link"
+            target="_blank">GitHub</a></li>
+      </ul>
+      <div class="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+  </nav>
+
+  <main style="padding-top: 90px;">
+    <div class="docs-container">
+      <!-- Sidebar -->
+      <aside class="docs-sidebar">
+        <nav class="docs-nav">
+          <h3>Documentation</h3>
+          <ul>
+            <li><a href="#getting-started" class="docs-link">Getting Started</a></li>
+            <li><a href="#api-reference" class="docs-link">API Reference</a></li>
+            <li><a href="#web-searcher" class="docs-link">WebSearcher</a></li>
+            <li><a href="#webcontentfetcher" class="docs-link">WebContentFetcher</a></li>
+            <li><a href="#cli" class="docs-link">CLI Interface</a></li>
+            <li><a href="#mcp-server" class="docs-link">MCP Server</a></li>
+            <li><a href="#browser-automation" class="docs-link">Browser Automation</a></li>
+            <li><a href="#utilities" class="docs-link">Utilities</a></li>
+            <li><a href="#types" class="docs-link">TypeScript Types</a></li>
+            <li><a href="#error-handling" class="docs-link">Error Handling</a></li>
+            <li><a href="#rate-limiting" class="docs-link">Rate Limiting</a></li>
+            <li><a href="#testing" class="docs-link">Testing</a></li>
+            <li><a href="#migration" class="docs-link">Migration Guide</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="docs-content">
+        <article>
+          <header class="docs-header">
+            <h1>Documentation</h1>
+            <p>Complete guide to using the DDG Web Search package.</p>
+          </header>
+
+          <!-- Getting Started -->
+          <section id="getting-started" class="docs-section">
+            <h2>Getting Started</h2>
+            <p>The DDG Web Search package provides a comprehensive solution for searching the web and fetching web
+              content with built-in rate limiting, error handling, and multiple interfaces.</p>
+
+            <h3>Installation</h3>
+            <div class="code-block">
+              <code>npm install ddg-web-search</code>
+              <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+            </div>
+
+            <h3>Quick Start</h3>
+            <div class="code-block">
+              <code>import { WebSearcher, WebContentFetcher } from "@lucid-spark/ddg-web-search";
+
+const searcher = new WebSearcher();
+const fetcher = new WebContentFetcher();
+
+// Search the web
+const results = await searcher.search("TypeScript");
+
+// Fetch web content
+const content = await fetcher.fetch("https://example.com");</code>
+              <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+            </div>
+          </section>
+
+          <!-- API Reference -->
+          <section id="api-reference" class="docs-section">
+            <h2>API Reference</h2>
+            <p>Complete reference for all classes, methods, and interfaces provided by the package.</p>
+          </section>
+
+          <!-- WebSearcher -->
+          <section id="web-searcher" class="docs-section">
+            <h2>WebSearcher</h2>
+            <p>The main class for searching the web using DuckDuckGo with browser automation. Features built-in rate
+              limiting,
+              captcha handling, and error handling.</p>
+
+            <h3>Constructor</h3>
+            <div class="method-signature">
+              <code>new WebSearcher(headless?: boolean)</code>
+            </div>
+            <p>Creates a new WebSearcher instance with browser automation capabilities.</p>
+            <ul>
+              <li><strong>headless</strong> (optional): Whether to run browser in headless mode (default: true)</li>
+            </ul>
+
+            <h3>Methods</h3>
+
+            <div class="method">
+              <h4>search(query: string): Promise&lt;SearchResult[]&gt;</h4>
+              <p>Searches the web using DuckDuckGo with browser automation and returns formatted results.</p>
+
+              <h5>Parameters</h5>
+              <ul>
+                <li><strong>query</strong> (string): The search query string</li>
+              </ul>
+
+              <h5>Returns</h5>
+              <p>Promise resolving to an array of <code>SearchResult</code> objects.</p>
+
+              <h5>Features</h5>
+              <ul>
+                <li>JavaScript rendering support for dynamic content</li>
+                <li>Captcha detection and handling</li>
+                <li>Anti-bot detection countermeasures</li>
+                <li>Conservative rate limiting (1 request per 2 seconds)</li>
+              </ul>
+
+              <h5>Example</h5>
+              <div class="code-block">
+                <code>const searcher = new WebSearcher();
+const results = await searcher.search("Node.js tutorials");
+
+results.forEach(result => {
+  console.log(result.title);
+  console.log(result.url);
+  console.log(result.snippet);
+});
+
+// Important: cleanup browser resources
+await searcher.close();</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+            </div>
+
+            <div class="method">
+              <h4>close(): Promise&lt;void&gt;</h4>
+              <p>Closes the browser instance and frees up system resources. Important for preventing memory leaks.</p>
+
+              <h5>Example</h5>
+              <div class="code-block">
+                <code>try {
+  const results = await searcher.search("query");
+  // process results
+} finally {
+  await searcher.close(); // Always cleanup
+}</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- WebContentFetcher -->
+          <section id="webcontentfetcher" class="docs-section">
+            <h2>WebContentFetcher</h2>
+            <p>Class for fetching and parsing web content with configurable rate limiting.</p>
+
+            <h3>Constructor</h3>
+            <div class="method-signature">
+              <code>new WebContentFetcher(rateLimit?: number, rateLimitInterval?: number)</code>
+            </div>
+
+            <h5>Parameters</h5>
+            <ul>
+              <li><strong>rateLimit</strong> (optional): Number of requests allowed per interval (default: 1)</li>
+              <li><strong>rateLimitInterval</strong> (optional): Time interval in milliseconds (default: 1000)</li>
+            </ul>
+
+            <h3>Methods</h3>
+
+            <div class="method">
+              <h4>fetch(url: string): Promise&lt;FetchResult&gt;</h4>
+              <p>Fetches content from the specified URL with rate limiting and error handling.</p>
+
+              <h5>Parameters</h5>
+              <ul>
+                <li><strong>url</strong> (string): The URL to fetch content from</li>
+              </ul>
+
+              <h5>Returns</h5>
+              <p>Promise resolving to a <code>FetchResult</code> object.</p>
+
+              <h5>Example</h5>
+              <div class="code-block">
+                <code>// Default rate limiting (1 request per second)
+const fetcher = new WebContentFetcher();
+
+// Custom rate limiting (2 requests per 3 seconds)
+const customFetcher = new WebContentFetcher(2, 3000);
+
+const result = await fetcher.fetch("https://example.com");
+
+if (result.success) {
+  console.log("Content:", result.data?.content);
+  console.log("Title:", result.data?.metadata?.title);
+  console.log("Description:", result.data?.metadata?.description);
+} else {
+  console.error("Error:", result.error);
+}</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- CLI Interface -->
+          <section id="cli" class="docs-section">
+            <h2>CLI Interface</h2>
+            <p>Command-line interface for easy access to search and fetch functionality.</p>
+
+            <h3>Installation</h3>
+            <div class="code-block">
+              <code>npm install -g ddg-web-search</code>
+              <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+            </div>
+
+            <h3>Commands</h3>
+
+            <div class="command">
+              <h4>ddg-web-search search &lt;query&gt;</h4>
+              <p>Search the web for the given query using browser automation.</p>
+              <div class="code-block">
+                <code>ddg-web-search search "TypeScript tutorials"</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+            </div>
+
+            <div class="command">
+              <h4>ddg-web-search fetch &lt;url&gt;</h4>
+              <p>Fetch content from the specified URL with intelligent parsing.</p>
+              <div class="code-block">
+                <code>ddg-web-search fetch https://example.com</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+            </div>
+
+            <div class="command">
+              <h4>ddg-web-search interactive</h4>
+              <p>Start interactive mode for multiple commands with enhanced user experience.</p>
+              <div class="code-block">
+                <code>ddg-web-search interactive</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+            </div>
+
+            <h3>Interactive Mode Commands</h3>
+            <ul>
+              <li><code>search &lt;query&gt;</code> or <code>s &lt;query&gt;</code> - Search the web</li>
+              <li><code>fetch &lt;url&gt;</code> or <code>f &lt;url&gt;</code> - Fetch web content</li>
+              <li><code>help</code> or <code>h</code> - Show help</li>
+              <li><code>version</code> or <code>v</code> - Show version</li>
+              <li><code>clear</code> or <code>cls</code> - Clear screen</li>
+              <li><code>exit</code> or <code>quit</code> or <code>q</code> - Exit</li>
+            </ul>
+          </section>
+
+          <!-- MCP Server -->
+          <section id="mcp-server" class="docs-section">
+            <h2>MCP Server</h2>
+            <p>Model Context Protocol server for AI assistant integration with support for both stdio and HTTP
+              transports.</p>
+
+            <h3>Starting the Server</h3>
+
+            <h4>Stdio Transport (Default)</h4>
+            <div class="code-block">
+              <code># Using global binary
+ddg-web-search-mcp
+
+# Using npx
+npx ddg-web-search mcp
+
+# Using built files
+node dist/mcp.js</code>
+              <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+            </div>
+
+            <h4>HTTP Transport</h4>
+            <div class="code-block">
+              <code># Default host and port (localhost:3001)
+node dist/mcp.js --transport http
+
+# Custom host and port
+node dist/mcp.js --transport http --host 0.0.0.0 --port 8080</code>
+              <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+            </div>
+
+            <h3>Configuration</h3>
+            <p>Add to your MCP client configuration (e.g., Claude Desktop):</p>
+            <div class="code-block">
+              <code>{
+  "mcpServers": {
+    "ddg-web-search": {
+      "command": "@lucid-spark/ddg-web-search-mcp",
+      "args": [],
+      "env": {}
+    }
+  }
+}</code>
+              <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+            </div>
+
+            <h3>Available Tools</h3>
+
+            <div class="mcp-tool">
+              <h4>search</h4>
+              <p>Search the web using DuckDuckGo with browser automation.</p>
+              <p><strong>Input:</strong> <code>{ "query": "search terms" }</code></p>
+              <p><strong>Output:</strong> Formatted list of search results with titles, URLs, and snippets</p>
+              <p><strong>Features:</strong> JavaScript rendering, captcha handling, anti-detection measures</p>
+            </div>
+
+            <div class="mcp-tool">
+              <h4>fetch_web_content</h4>
+              <p>Fetch and parse content from a web URL with intelligent scraping.</p>
+              <p><strong>Input:</strong> <code>{ "url": "https://example.com" }</code></p>
+              <p><strong>Output:</strong> Parsed content with metadata (truncated to 10,000 characters if needed)</p>
+              <p><strong>Features:</strong> HTML-to-Markdown conversion, metadata extraction, content cleaning</p>
+            </div>
+
+            <h3>HTTP Endpoints</h3>
+            <p>When using HTTP transport, the server provides:</p>
+            <ul>
+              <li><strong>GET /</strong> - Server information and available endpoints</li>
+              <li><strong>GET /sse</strong> - Server-Sent Events connection for receiving responses</li>
+              <li><strong>POST /message/{sessionId}</strong> - Send MCP requests to the server</li>
+            </ul>
+          </section>
+
+          <!-- Browser Automation -->
+          <section id="browser-automation" class="docs-section">
+            <h2>Browser Automation</h2>
+            <p>The WebSearcher uses Puppeteer for reliable browser automation, providing better captcha handling and
+              JavaScript rendering support.</p>
+
+            <h3>Key Features</h3>
+            <ul>
+              <li><strong>JavaScript Rendering:</strong> Full support for dynamically loaded content</li>
+              <li><strong>Captcha Handling:</strong> Intelligent detection and handling of captcha challenges</li>
+              <li><strong>Anti-Detection:</strong> Uses real browser behavior to avoid bot detection</li>
+              <li><strong>Resource Management:</strong> Proper cleanup of browser instances to prevent memory leaks</li>
+            </ul>
+
+            <h3>Browser Configuration</h3>
+            <div class="code-block">
+              <code>// Headless mode (default) - no browser window
+const searcher = new WebSearcher();
+
+// Non-headless mode for debugging or manual captcha solving
+const debugSearcher = new WebSearcher(false);</code>
+              <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+            </div>
+
+            <h3>Resource Management</h3>
+            <p>Always call <code>close()</code> to prevent memory leaks:</p>
+            <div class="code-block">
+              <code>const searcher = new WebSearcher();
+try {
+  const results = await searcher.search("query");
+  // Process results
+} finally {
+  await searcher.close(); // Essential for cleanup
+}</code>
+              <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+            </div>
+
+            <h3>Captcha Handling</h3>
+            <ul>
+              <li><strong>Headless Mode:</strong> Returns empty results if captcha is detected</li>
+              <li><strong>Non-Headless Mode:</strong> Allows time for manual captcha solving</li>
+              <li><strong>Detection:</strong> Automatically detects captcha challenges on the page</li>
+            </ul>
+
+            <h3>Performance Considerations</h3>
+            <ul>
+              <li><strong>Browser Overhead:</strong> Higher resource usage than HTTP requests</li>
+              <li><strong>Initialization:</strong> Browser launch takes 1-2 seconds</li>
+              <li><strong>Memory Usage:</strong> Monitor for memory leaks in long-running applications</li>
+              <li><strong>Browser Reuse:</strong> Browser instance is reused across searches for efficiency</li>
+            </ul>
+
+            <!-- Utilities -->
+            <section id="utilities" class="docs-section">
+              <h2>Utilities</h2>
+              <p>Utility classes used internally and available for advanced usage.</p>
+
+              <h3>RateLimiter</h3>
+              <p>Token bucket rate limiter for controlling request frequency.</p>
+              <div class="code-block">
+                <code>import { RateLimiter } from "@lucid-spark/ddg-web-search";
+
+// 5 requests per 10 seconds
+const rateLimiter = new RateLimiter(5, 10000);
+
+// Wait for permission to make a request
+await rateLimiter.acquire();
+
+// Get current status
+const status = rateLimiter.getStatus();
+console.log(status.requests, status.limit, status.interval);</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+
+              <h3>HttpClient</h3>
+              <p>Singleton HTTP client with centralized error handling and logging.</p>
+              <div class="code-block">
+                <code>import { HttpClient } from "@lucid-spark/ddg-web-search";
+
+const client = HttpClient.getInstance();
+
+// GET request
+const data = await client.get("https://api.example.com");
+
+// POST request
+const result = await client.post("https://api.example.com", { key: "value" });</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+            </section>
+
+            <!-- TypeScript Types -->
+            <section id="types" class="docs-section">
+              <h2>TypeScript Types</h2>
+              <p>Complete type definitions for all interfaces and types used in the package.</p>
+
+              <h3>SearchResult</h3>
+              <div class="code-block">
+                <code>interface SearchResult {
+  title: string;    // The title of the search result
+  url: string;      // The URL of the search result
+  snippet: string;  // A brief description or snippet
+  icon?: string;    // Optional icon URL for the result
+}</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+
+              <h3>WebContent</h3>
+              <div class="code-block">
+                <code>interface WebContent {
+  content: string;      // Main content of the page (HTML converted to Markdown)
+  metadata?: {          // Optional metadata extracted from the page
+    title?: string;     // Page title
+    description?: string;  // Page description
+    url?: string;       // Page URL
+    author?: string;    // Page author
+    publishDate?: string;  // Publication date
+  };
+}</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+
+              <h3>FetchResult</h3>
+              <div class="code-block">
+                <code>interface FetchResult {
+  success: boolean;     // Whether the fetch was successful
+  data?: WebContent;    // Parsed web content (if available)
+  error?: string;       // Error message (if failed)
+}</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+
+              <h3>FetchOptions</h3>
+              <div class="code-block">
+                <code>interface FetchOptions {
+  timeout?: number;                    // Request timeout in milliseconds
+  headers?: Record<string, string>;    // Custom headers
+}</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+            </section>
+
+            <!-- Error Handling -->
+            <section id="error-handling" class="docs-section">
+              <h2>Error Handling</h2>
+              <p>The package provides comprehensive error handling for various failure scenarios.</p>
+
+              <h3>Search Errors</h3>
+              <ul>
+                <li>Empty or invalid queries return empty results arrays</li>
+                <li>Network errors are caught and logged, returning empty arrays</li>
+                <li>Invalid API responses are handled gracefully</li>
+              </ul>
+
+              <h3>Fetch Errors</h3>
+              <ul>
+                <li>Invalid URLs return error results with descriptive messages</li>
+                <li>Network timeouts and connection errors are caught</li>
+                <li>HTTP error status codes are handled appropriately</li>
+              </ul>
+
+              <h3>Example Error Handling</h3>
+              <div class="code-block">
+                <code>try {
+  const results = await searcher.search("query");
+  
+  if (results.length === 0) {
+    console.log("No results found");
+  }
+  
+  const fetchResult = await fetcher.fetch("https://example.com");
+  
+  if (!fetchResult.success) {
+    console.error("Fetch failed:", fetchResult.error);
+  }
+} catch (error) {
+  console.error("Unexpected error:", error);
+}</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+            </section>
+
+            <!-- Rate Limiting -->
+            <section id="rate-limiting" class="docs-section">
+              <h2>Rate Limiting</h2>
+              <p>Built-in rate limiting prevents overwhelming external services and ensures respectful API usage.</p>
+
+              <h3>Default Rate Limits</h3>
+              <ul>
+                <li><strong>WebSearcher:</strong> 1 request per 2 seconds (conservative for browser automation)</li>
+                <li><strong>WebContentFetcher:</strong> 1 request per second (configurable)</li>
+              </ul>
+
+              <h3>Custom Rate Limiting</h3>
+              <div class="code-block">
+                <code>// 3 requests per 5 seconds
+const fetcher = new WebContentFetcher(3, 5000);
+
+// Rate limiting is enforced automatically
+for (let i = 0; i < 5; i++) {
+  const result = await fetcher.fetch(`https://httpbin.org/get?id=${i}`);
+  console.log(`Request ${i + 1} completed`);
+}</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+
+              <h3>Rate Limiter API</h3>
+              <div class="code-block">
+                <code>const rateLimiter = new RateLimiter(2, 1000); // 2 per second
+
+// Check status
+const status = rateLimiter.getStatus();
+console.log(`${status.requests}/${status.limit} requests used`);
+
+// Acquire permission (waits if necessary)
+await rateLimiter.acquire();
+console.log("Permission granted for request");</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+            </section>
+
+            <!-- Testing -->
+            <section id="testing" class="docs-section">
+              <h2>Testing</h2>
+              <p>The package includes comprehensive test suites and supports easy mocking for unit tests.</p>
+
+              <h3>Running Tests</h3>
+              <div class="code-block">
+                <code># Run all tests
+npm test
+
+# Run tests with coverage
+npm run test -- --coverage
+
+# Run specific test file
+npm test -- WebSearcher.test.ts</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+
+              <h3>Mocking for Tests</h3>
+              <div class="code-block">
+                <code>import { WebSearcher } from '@lucid-spark/ddg-web-search';
+import axios from 'axios';
+
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+describe('WebSearcher', () => {
+  it('should return search results', async () => {
+    mockedAxios.get.mockResolvedValue({
+      data: { RelatedTopics: [/* mock data */] }
+    });
+    
+    const searcher = new WebSearcher();
+    const results = await searcher.search('test');
+    
+    expect(results).toHaveLength(1);
+  });
+});</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+            </section>
+
+            <!-- Migration Guide -->
+            <section id="migration" class="docs-section">
+              <h2>Migration Guide</h2>
+              <p>Guide for migrating from older versions or similar packages.</p>
+
+              <h3>Breaking Changes</h3>
+              <p>This section will be updated as new versions are released with any breaking changes and migration
+                instructions.</p>
+
+              <h3>Upgrading</h3>
+              <div class="code-block">
+                <code># Update to latest version
+npm update ddg-web-search
+
+# Check for security updates
+npm audit
+
+# Update global installation
+npm install -g ddg-web-search@latest</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+            </section>
+        </article>
+      </main>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>DDG Web Search</h3>
+          <p>A comprehensive package for searching the web and fetching web content.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Links</h4>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="examples.html">Examples</a></li>
+            <li><a href="https://github.com/lucivuc/ddg-web-search">GitHub</a></li>
+            <li><a href="https://npmjs.com/@lucid-spark/ddg-web-search">npm</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="index.html#api-overview">API Reference</a></li>
+            <li><a href="https://github.com/lucivuc/ddg-web-search/issues">Report Issues</a></li>
+            <li><a href="https://github.com/lucivuc/ddg-web-search/blob/main/LICENSE">License</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 DDG Web Search Contributors. Licensed under MIT License.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+
+</html>

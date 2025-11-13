@@ -1,0 +1,17 @@
+# Development files and folders
+node_modules/
+tests/
+examples/
+coverage/
+*.test.ts
+test-package.ts
+*.tsbuildinfo
+*.log
+
+# TypeScript source (include dist/ for compiled output)
+src/
+tsconfig.json
+jest.config.js
+
+# Development docs
+README.md

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Examples - DDG Web Search package</title>
+  <meta name="description" content="Code examples and usage demonstrations for the DDG Web Search package.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/examples.styles.css">
+  <link rel="icon" type="image/x-icon"
+    href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iI0RFNTgzMyIvPgo8cGF0aCBkPSJNOCAxNkMxMiAxNiAxNiAxMiAxNiA4QzE2IDEyIDIwIDE2IDI0IDE2QzIwIDE2IDE2IDIwIDE2IDI0QzE2IDIwIDEyIDE2IDggMTZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K">
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <span class="logo-icon">🦆</span>
+        <span class="logo-text">DDG Web Search</span>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#features" class="nav-link">Features</a></li>
+        <li><a href="index.html#installation" class="nav-link">Installation</a></li>
+        <li><a href="index.html#usage" class="nav-link">Usage</a></li>
+        <li><a href="index.html#api-overview" class="nav-link">API</a></li>
+        <li><a href="examples.html" class="nav-link">Examples</a></li>
+        <li><a href="docs.html" class="nav-link">Documentation</a></li>
+        <li><a href="https://github.com/lucivuc/ddg-web-search" class="nav-link github-link"
+            target="_blank">GitHub</a></li>
+      </ul>
+      <div class="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+  </nav>
+
+  <main style="padding-top: 90px;">
+    <section class="container" style="padding: 40px 20px;">
+      <h1 class="section-title">Code Examples</h1>
+      <p style="text-align: center; color: var(--text-light); font-size: 1.1rem; margin-bottom: 60px;">
+        Practical examples showing how to use the DDG Web Search package in different scenarios.
+      </p>
+
+      <!-- Basic Usage -->
+      <div class="example-section">
+        <h2 class="example-title">Basic Usage</h2>
+        <p class="example-description">
+          Simple example showing how to search the web and fetch web content.
+        </p>
+        <div class="code-example">
+          <div class="code-header">
+            <span class="code-title">basic-usage.ts</span>
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+          </div>
+          <pre><code>import { WebSearcher, WebContentFetcher } from "@lucid-spark/ddg-web-search";
+
+async function main() {
+  const searcher = new WebSearcher();
+  const fetcher = new WebContentFetcher();
+
+  try {
+    // Search the web using DuckDuckGo with browser automation
+    console.log("🔍 Searching for TypeScript tutorials...");
+    const results = await searcher.search("TypeScript tutorials");
+    
+    console.log(`✅ Found ${results.length} results:`);
+    results.forEach((result, index) => {
+      console.log(`${index + 1}. ${result.title}`);
+      console.log(`   URL: ${result.url}`);
+      console.log(`   Snippet: ${result.snippet}`);
+      if (result.icon) {
+        console.log(`   Icon: ${result.icon}`);
+      }
+      console.log();
+    });
+
+    // Fetch content from the first result
+    if (results.length > 0) {
+      console.log("📄 Fetching content from first result...");
+      const fetchResult = await fetcher.fetch(results[0].url);
+      
+      if (fetchResult.success && fetchResult.data?.content) {
+        console.log(`✅ Content fetched successfully!`);
+        console.log(`📊 Content length: ${fetchResult.data.content.length} characters`);
+        console.log(`📝 Title: ${fetchResult.data.metadata?.title || 'N/A'}`);
+        console.log(`📝 Preview: ${fetchResult.data.content.substring(0, 200)}...`);
+      } else {
+        console.log(`❌ Failed to fetch content: ${fetchResult.error}`);
+      }
+    }
+  } catch (error) {
+    console.error("❌ Error:", error);
+  } finally {
+    // Important: cleanup browser resources
+    await searcher.close();
+  }
+}
+
+main();</code></pre>
+        </div>
+      </div>
+
+      <!-- CLI Usage -->
+      <div class="example-section">
+        <h2 class="example-title">Command Line Interface</h2>
+        <p class="example-description">
+          Examples of using the built-in CLI for quick searches and content fetching.
+        </p>
+        <div class="code-example">
+          <div class="code-header">
+            <span class="code-title">Terminal Commands</span>
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+          </div>
+          <pre><code># Install globally for CLI access
+npm install -g ddg-web-search
+
+# Search the web with browser automation
+ddg-web-search search "Node.js best practices"
+
+# Fetch content from a URL with intelligent parsing
+ddg-web-search fetch https://nodejs.org/en/docs/
+
+# Start interactive mode
+ddg-web-search interactive
+
+# In interactive mode:
+🦆 ddg> search "React hooks tutorial"
+🦆 ddg> fetch https://reactjs.org/docs/hooks-intro.html
+🦆 ddg> help
+🦆 ddg> exit</code></pre>
+        </div>
+      </div>
+
+      <!-- MCP Server -->
+      <div class="example-section">
+        <h2 class="example-title">MCP Server Integration</h2>
+        <p class="example-description">
+          Setting up the Model Context Protocol server for AI assistant integration.
+        </p>
+        <div class="code-example">
+          <div class="code-header">
+            <span class="code-title">mcp-setup.json</span>
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+          </div>
+          <pre><code>{
+  "mcpServers": {
+    "ddg-web-search": {
+      "command": "@lucid-spark/ddg-web-search-mcp",
+      "args": [],
+      "env": {}
+    }
+  }
+}</code></pre>
+        </div>
+        <div class="code-example">
+          <div class="code-header">
+            <span class="code-title">Terminal - MCP Server</span>
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+          </div>
+          <pre><code># Start MCP server with stdio transport (default)
+ddg-web-search-mcp
+
+# Start with HTTP transport
+node dist/mcp.js --transport http --port 3001
+
+# Start with custom host and port
+node dist/mcp.js --transport http --host 0.0.0.0 --port 8080
+
+# Test HTTP transport with curl
+curl http://localhost:3001/
+
+# Available MCP tools:
+# - search: Search the web for results
+# - fetch_web_content: Fetch content from a web URL</code></pre>
+        </div>
+      </div>
+
+      <!-- Advanced Configuration -->
+      <div class="example-section">
+        <h2 class="example-title">Advanced Configuration</h2>
+        <p class="example-description">
+          Advanced usage with custom rate limiting and error handling.
+        </p>
+        <div class="code-example">
+          <div class="code-header">
+            <span class="code-title">advanced-usage.ts</span>
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+          </div>
+          <pre><code>import { 
+  WebSearcher, 
+  WebContentFetcher, 
+  RateLimiter,
+  HttpClient 
+} from "@lucid-spark/ddg-web-search";
+
+async function advancedExample() {
+  // Custom rate limiting: 2 requests per 3 seconds
+  const customFetcher = new WebContentFetcher(2, 3000);
+  const searcher = new WebSearcher();
+
+  try {
+    // Batch search multiple queries
+    const queries = [
+      "TypeScript best practices",
+      "Node.js performance optimization",
+      "React testing strategies"
+    ];
+
+    console.log("🔍 Performing batch searches...");
+    
+    for (const query of queries) {
+      try {
+        console.log(`\n📝 Searching: "${query}"`);
+        const results = await searcher.search(query);
+        
+        console.log(`   ✅ Found ${results.length} results`);
+        
+        // Fetch content from first result if available
+        if (results.length > 0) {
+          const fetchResult = await customFetcher.fetch(results[0].url);
+          
+          if (fetchResult.success && fetchResult.data?.content) {
+            console.log(`   📄 Content length: ${fetchResult.data.content.length} chars`);
+            console.log(`   📝 Title: ${fetchResult.data.metadata?.title || 'N/A'}`);
+          } else {
+            console.log(`   ❌ Fetch failed: ${fetchResult.error}`);
+          }
+        }
+      } catch (error) {
+        console.error(`   ❌ Error searching "${query}":`, error);
+      }
+    }
+  } finally {
+    // Essential cleanup
+    await searcher.close();
+  }
+}
+
+// Error handling example
+async function errorHandlingExample() {
+  const fetcher = new WebContentFetcher();
+  
+  const urls = [
+    "https://httpbin.org/status/200",  // Should succeed
+    "https://httpbin.org/status/404",  // Should fail
+    "invalid-url",                     // Invalid URL
+    "https://httpbin.org/delay/5"      // Might timeout
+  ];
+  
+  for (const url of urls) {
+    try {
+      console.log(`\n🔗 Fetching: ${url}`);
+      const result = await fetcher.fetch(url);
+      
+      if (result.success && result.data?.content) {
+        console.log(`   ✅ Success: ${result.data.content.length} characters`);
+      } else {
+        console.log(`   ❌ Failed: ${result.error}`);
+      }
+    } catch (error) {
+      console.log(`   💥 Exception: ${error}`);
+    }
+  }
+}
+
+// Run examples
+advancedExample().then(() => {
+  console.log("\n" + "=".repeat(50));
+  return errorHandlingExample();
+}).catch(console.error);</code></pre>
+        </div>
+      </div>
+
+      <!-- Express.js Integration -->
+      <div class="example-section">
+        <h2 class="example-title">Express.js API Integration</h2>
+        <p class="example-description">
+          Building a REST API with Express.js using the DDG Web Search package.
+        </p>
+        <div class="code-example">
+          <div class="code-header">
+            <span class="code-title">express-api.js</span>
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+          </div>
+          <pre><code>const express = require('express');
+const { WebSearcher, WebContentFetcher } = require('@lucid-spark/ddg-web-search');
+
+const app = express();
+const port = 3000;
+
+// Initialize services
+const searcher = new WebSearcher();
+const fetcher = new WebContentFetcher();
+
+app.use(express.json());
+
+// Search endpoint
+app.get('/api/search', async (req, res) => {
+  try {
+    const { q } = req.query;
+    
+    if (!q) {
+      return res.status(400).json({ 
+        error: 'Query parameter "q" is required' 
+      });
+    }
+
+    const results = await searcher.search(q);
+    
+    res.json({
+      query: q,
+      results: results,
+      count: results.length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      error: 'Search failed', 
+      message: error.message 
+    });
+  }
+});
+
+// Fetch content endpoint
+app.post('/api/fetch', async (req, res) => {
+  try {
+    const { url } = req.body;
+    
+    if (!url) {
+      return res.status(400).json({ 
+        error: 'URL is required in request body' 
+      });
+    }
+
+    const result = await fetcher.fetch(url);
+    
+    if (result.success && result.data?.content) {
+      res.json({
+        url: url,
+        content: result.data.content,
+        length: result.data.content.length,
+        metadata: result.data.metadata,
+        timestamp: new Date().toISOString()
+      });
+    } else {
+      res.status(400).json({
+        url: url,
+        error: result.error,
+        timestamp: new Date().toISOString()
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ 
+      error: 'Fetch failed', 
+      message: error.message 
+    });
+  }
+});
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString() 
+  });
+});
+
+app.listen(port, () => {
+  console.log(`🚀 DDG Web Search API listening at http://localhost:${port}`);
+  console.log(`📋 Endpoints:`);
+  console.log(`   GET  /api/search?q=<query>`);
+  console.log(`   POST /api/fetch (body: {"url": "..."})`);
+  console.log(`   GET  /health`);
+});</code></pre>
+        </div>
+      </div>
+
+      <!-- TypeScript Types -->
+      <div class="example-section">
+        <h2 class="example-title">TypeScript Types & Interfaces</h2>
+        <p class="example-description">
+          Working with TypeScript types for better development experience.
+        </p>
+        <div class="code-example">
+          <div class="code-header">
+            <span class="code-title">types-example.ts</span>
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+          </div>
+          <pre><code>import { 
+  SearchResult, 
+  FetchResult, 
+  WebContent,
+  WebSearcher, 
+  WebContentFetcher 
+} from "@lucid-spark/ddg-web-search";
+
+// Type-safe search function
+async function searchWithTypes(query: string): Promise<SearchResult[]> {
+  const searcher = new WebSearcher();
+  return await searcher.search(query);
+}
+
+// Type-safe fetch function
+async function fetchWithTypes(url: string): Promise<FetchResult> {
+  const fetcher = new WebContentFetcher();
+  return await fetcher.fetch(url);
+}
+
+// Custom interface extending the base types
+interface SearchWithMetadata extends SearchResult {
+  searchTimestamp: Date;
+  relevanceScore?: number;
+}
+
+// Custom service class with proper typing
+class SearchService {
+  private searcher: WebSearcher;
+  private fetcher: WebContentFetcher;
+
+  constructor() {
+    this.searcher = new WebSearcher();
+    this.fetcher = new WebContentFetcher(1, 2000); // 1 req per 2 seconds
+  }
+
+  async searchWithMetadata(query: string): Promise<SearchWithMetadata[]> {
+    const results = await this.searcher.search(query);
+    
+    return results.map((result, index) => ({
+      ...result,
+      searchTimestamp: new Date(),
+      relevanceScore: Math.max(0, 1 - (index * 0.1)) // Simple relevance scoring
+    }));
+  }
+
+  async fetchContent(url: string): Promise<WebContent | null> {
+    const result = await this.fetcher.fetch(url);
+    
+    if (result.success && result.data?.content) {
+      return {
+        content: result.data.content,
+        metadata: {
+          title: this.extractTitle(result.data.content),
+          description: this.extractDescription(result.data.content),
+          url: url
+        }
+      };
+    }
+    
+    return null;
+  }
+
+  private extractTitle(content: string): string {
+    const titleMatch = content.match(/<title[^>]*>([^<]+)<\/title>/i);
+    return titleMatch ? titleMatch[1].trim() : 'No title found';
+  }
+
+  private extractDescription(content: string): string {
+    const descMatch = content.match(/<meta[^>]*name="description"[^>]*content="([^"]+)"/i);
+    return descMatch ? descMatch[1].trim() : content.substring(0, 160) + '...';
+  }
+}
+
+// Usage example
+async function main() {
+  const service = new SearchService();
+  
+  const results: SearchWithMetadata[] = await service.searchWithMetadata("TypeScript");
+  
+  for (const result of results.slice(0, 3)) {
+    console.log(`📄 ${result.title}`);
+    console.log(`🔗 ${result.url}`);
+    console.log(`⭐ Relevance: ${result.relevanceScore?.toFixed(2)}`);
+    console.log(`🕐 Searched: ${result.searchTimestamp.toISOString()}`);
+    
+    const content = await service.fetchContent(result.url);
+    if (content) {
+      console.log(`📝 ${content.metadata?.description}`);
+    }
+    console.log('---');
+  }
+}
+
+main().catch(console.error);</code></pre>
+        </div>
+      </div>
+
+      <!-- Testing Examples -->
+      <div class="example-section">
+        <h2 class="example-title">Testing</h2>
+        <p class="example-description">
+          Unit testing examples using Jest with mocked dependencies.
+        </p>
+        <div class="code-example">
+          <div class="code-header">
+            <span class="code-title">search.test.ts</span>
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+          </div>
+          <pre><code>import { WebSearcher } from '@lucid-spark/ddg-web-search';
+// Note: This is a mock example - the actual WebSearcher uses Puppeteer for browser automation
+
+describe('WebSearcher', () => {
+  let searcher: WebSearcher;
+
+  beforeEach(() => {
+    searcher = new WebSearcher();
+  });
+
+  afterEach(async () => {
+    // Important: cleanup browser resources
+    await searcher.close();
+  });
+
+  it('should return search results for valid query', async () => {
+    const results = await searcher.search('TypeScript');
+
+    expect(Array.isArray(results)).toBe(true);
+    expect(results.length).toBeGreaterThan(0);
+    
+    if (results.length > 0) {
+      expect(results[0]).toHaveProperty('title');
+      expect(results[0]).toHaveProperty('url');
+      expect(results[0]).toHaveProperty('snippet');
+      expect(typeof results[0].title).toBe('string');
+      expect(typeof results[0].url).toBe('string');
+      expect(typeof results[0].snippet).toBe('string');
+    }
+  });
+
+  it('should return empty array for empty query', async () => {
+    const results = await searcher.search('');
+    
+    expect(results).toEqual([]);
+  });
+
+  it('should handle search errors gracefully', async () => {
+    // Test with very long query that might cause issues
+    const veryLongQuery = 'a'.repeat(1000);
+    const results = await searcher.search(veryLongQuery);
+    
+    expect(Array.isArray(results)).toBe(true);
+  });
+});</code></pre>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>DDG Web Search</h3>
+          <p>A comprehensive package for searching the web and fetching web content.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Links</h4>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="examples.html">Examples</a></li>
+            <li><a href="https://github.com/lucivuc/ddg-web-search">GitHub</a></li>
+            <li><a href="https://npmjs.com/@lucid-spark/ddg-web-search">npm</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="index.html#api-overview">API Reference</a></li>
+            <li><a href="https://github.com/lucivuc/ddg-web-search/issues">Report Issues</a></li>
+            <li><a href="https://github.com/lucivuc/ddg-web-search/blob/main/LICENSE">License</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 DDG Web Search Contributors. Licensed under MIT License.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+
+</html>

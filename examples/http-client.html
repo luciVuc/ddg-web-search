@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DDG Web Search MCP Server - HTTP Client Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #333;
+        text-align: center;
+      }
+
+      .section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+
+      button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+
+      button:hover {
+        background: #0056b3;
+      }
+
+      button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .log {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 12px;
+        height: 200px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .status {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 4px;
+      }
+
+      .status.connected {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .status.disconnected {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .section > * {
+        max-width: -webkit-fill-available;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>DDG Web Search MCP Server - HTTP Client Test</h1>
+
+      <div class="section">
+        <h3>Connection Status</h3>
+        <div id="status" class="status disconnected">Disconnected</div>
+        <button id="connectBtn" onclick="connect()">Connect</button>
+        <button id="disconnectBtn" onclick="disconnect()" disabled>
+          Disconnect
+        </button>
+      </div>
+
+      <div class="section">
+        <h3>Server Info</h3>
+        <button onclick="getServerInfo()">Get Server Info</button>
+        <textarea id="serverInfo" class="log"></textarea>
+      </div>
+
+      <div class="section">
+        <h3>Available Tools</h3>
+        <button onclick="listTools()" id="listToolsBtn" disabled>
+          List Tools
+        </button>
+        <textarea id="toolsList" class="log"></textarea>
+      </div>
+
+      <div class="section">
+        <h3>Search the web</h3>
+        <input
+          type="text"
+          id="searchQuery"
+          placeholder="Enter search query"
+          value="TypeScript tutorials"
+        />
+        <button onclick="search()" id="searchBtn" disabled>Search</button>
+        <textarea id="searchResults" class="log"></textarea>
+      </div>
+
+      <div class="section">
+        <h3>Fetch Web Content</h3>
+        <input
+          type="text"
+          id="fetchUrl"
+          placeholder="Enter URL to fetch"
+          value="https://httpbin.org/html"
+        />
+        <button onclick="fetchContent()" id="fetchBtn" disabled>
+          Fetch Content
+        </button>
+        <textarea id="fetchResults" class="log"></textarea>
+      </div>
+
+      <div class="section">
+        <h3>Connection Log</h3>
+        <button onclick="clearLog()">Clear Log</button>
+        <textarea id="log" class="log"></textarea>
+      </div>
+    </div>
+
+    <script>
+      let eventSource = null;
+      let sessionId = null;
+      let messageEndpoint = null;
+      let connected = false;
+      let requestId = 1;
+
+      function log(message) {
+        const logDiv = document.getElementById("log");
+        const time = new Date().toLocaleTimeString();
+        logDiv.innerHTML += `[${time}] ${message}\n`;
+        logDiv.scrollTop = logDiv.scrollHeight;
+      }
+
+      function updateStatus(isConnected) {
+        connected = isConnected;
+        const statusDiv = document.getElementById("status");
+        const connectBtn = document.getElementById("connectBtn");
+        const disconnectBtn = document.getElementById("disconnectBtn");
+        const searchBtn = document.getElementById("searchBtn");
+        const fetchBtn = document.getElementById("fetchBtn");
+        const listToolsBtn = document.getElementById("listToolsBtn");
+
+        if (isConnected) {
+          statusDiv.textContent = `Connected (Session: ${sessionId})`;
+          statusDiv.className = "status connected";
+          connectBtn.disabled = true;
+          disconnectBtn.disabled = false;
+          searchBtn.disabled = false;
+          fetchBtn.disabled = false;
+          listToolsBtn.disabled = false;
+        } else {
+          statusDiv.textContent = "Disconnected";
+          statusDiv.className = "status disconnected";
+          connectBtn.disabled = false;
+          disconnectBtn.disabled = true;
+          searchBtn.disabled = true;
+          fetchBtn.disabled = true;
+          listToolsBtn.disabled = true;
+        }
+      }
+
+      async function getServerInfo() {
+        try {
+          const response = await fetch("http://localhost:3001");
+          const data = await response.json();
+          document.getElementById("serverInfo").textContent = JSON.stringify(
+            data,
+            null,
+            2,
+          );
+          log("Server info retrieved successfully");
+        } catch (error) {
+          log(`Error getting server info: ${error.message}`);
+          document.getElementById("serverInfo").textContent =
+            `Error: ${error.message}`;
+        }
+      }
+
+      function connect() {
+        if (connected) return;
+
+        log("Connecting to MCP server...");
+
+        eventSource = new EventSource("http://localhost:3001/sse");
+
+        eventSource.onopen = function (event) {
+          log("SSE connection opened");
+        };
+
+        eventSource.addEventListener("endpoint", function (event) {
+          const endpointUrl = event.data;
+          log(`Received endpoint: ${endpointUrl}`);
+
+          // Extract session ID from endpoint URL
+          const url = new URL(endpointUrl, "http://localhost:3001");
+          sessionId = url.searchParams.get("sessionId");
+          messageEndpoint = `/message/${sessionId}`;
+
+          log(`Session ID: ${sessionId}`);
+          log(`Message endpoint: ${messageEndpoint}`);
+
+          updateStatus(true);
+
+          // Send initialize request
+          sendMCPRequest({
+            jsonrpc: "2.0",
+            id: requestId++,
+            method: "initialize",
+            params: {
+              protocolVersion: "2024-11-05",
+              capabilities: {},
+              clientInfo: {
+                name: "HTTP Test Client",
+                version: "1.0.0",
+              },
+            },
+          }).then(() => {
+            // Send initialized notification after initialization response
+            setTimeout(() => {
+              sendMCPRequest({
+                jsonrpc: "2.0",
+                method: "notifications/initialized",
+              });
+            }, 100);
+          });
+        });
+
+        eventSource.addEventListener("message", function (event) {
+          try {
+            const message = JSON.parse(event.data);
+            log(`Received: ${JSON.stringify(message, null, 2)}`);
+            handleMCPResponse(message);
+          } catch (error) {
+            log(`Error parsing message: ${error.message}`);
+          }
+        });
+
+        eventSource.onerror = function (event) {
+          log("SSE connection error occurred");
+          console.error("SSE Error:", event);
+
+          // Only disconnect if we're currently connected
+          if (connected) {
+            updateStatus(false);
+            log("Connection lost due to error");
+          }
+        };
+
+        eventSource.onclose = function (event) {
+          log("SSE connection closed");
+          updateStatus(false);
+          sessionId = null;
+          messageEndpoint = null;
+        };
+      }
+
+      function disconnect() {
+        if (eventSource) {
+          eventSource.close();
+          eventSource = null;
+        }
+        updateStatus(false);
+        log("Disconnected from server");
+      }
+
+      async function sendMCPRequest(request) {
+        if (!connected || !messageEndpoint) {
+          log("Not connected to server");
+          return;
+        }
+
+        try {
+          log(`Sending: ${JSON.stringify(request, null, 2)}`);
+
+          const response = await fetch(
+            `http://localhost:3001${messageEndpoint}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(request),
+            },
+          );
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          log("Request sent successfully");
+        } catch (error) {
+          log(`Error sending request: ${error.message}`);
+        }
+      }
+
+      function handleMCPResponse(message) {
+        // Handle different types of MCP responses
+        if (message.method === "initialized") {
+          log("Server initialized successfully");
+        } else if (message.result) {
+          // Handle tool call results
+          if (message.result.content || message.result.tools) {
+            // Display tool results in appropriate sections
+            const lastRequest = getCurrentRequestContext(message.id);
+            if (lastRequest) {
+              displayToolResult(lastRequest.tool, message.result);
+            } else {
+              log(`Tool result: ${JSON.stringify(message.result, null, 2)}`);
+            }
+          } else {
+            log(`Response: ${JSON.stringify(message.result, null, 2)}`);
+          }
+        } else if (message.error) {
+          log(`Error response: ${JSON.stringify(message.error, null, 2)}`);
+
+          // Show error in relevant result section
+          const lastRequest = getCurrentRequestContext(message.id);
+          if (lastRequest) {
+            const errorText = `Error: ${message.error.message || "Unknown error"}`;
+            if (lastRequest.tool === "search") {
+              document.getElementById("searchResults").textContent = errorText;
+            } else if (lastRequest.tool === "fetch_web_content") {
+              document.getElementById("fetchResults").textContent = errorText;
+            } else if (lastRequest.tool === "tools/list") {
+              document.getElementById("toolsList").textContent = errorText;
+            }
+          }
+        }
+      }
+
+      // Track request context to match responses
+      let requestContext = new Map();
+
+      function getCurrentRequestContext(responseId) {
+        return requestContext.get(responseId);
+      }
+
+      function setRequestContext(requestId, context) {
+        requestContext.set(requestId, context);
+      }
+
+      function displayToolResult(toolName, result) {
+        let targetDiv;
+        if (toolName === "search") {
+          targetDiv = document.getElementById("searchResults");
+        } else if (toolName === "fetch_web_content") {
+          targetDiv = document.getElementById("fetchResults");
+        }
+
+        if (targetDiv && result.content && result.content[0]) {
+          const content =
+            result.content[0].text || JSON.stringify(result, null, 2);
+          targetDiv.textContent = content;
+        } else if (toolName === "tools/list") {
+          const toolsDiv = document.getElementById("toolsList");
+          if (toolsDiv && result.tools) {
+            const toolsText = result.tools
+              .map((tool) => `• ${tool.name}: ${tool.description}`)
+              .join("\n");
+            toolsDiv.textContent = toolsText;
+          }
+        }
+      }
+
+      async function listTools() {
+        const currentRequestId = requestId++;
+        const request = {
+          jsonrpc: "2.0",
+          id: currentRequestId,
+          method: "tools/list",
+        };
+
+        // Track this request
+        setRequestContext(currentRequestId, { tool: "tools/list" });
+
+        // Clear previous results
+        document.getElementById("toolsList").textContent = "Loading tools...";
+
+        await sendMCPRequest(request);
+      }
+
+      async function search() {
+        const query = document.getElementById("searchQuery").value.trim();
+        if (!query) {
+          alert("Please enter a search query");
+          return;
+        }
+
+        const currentRequestId = requestId++;
+        const request = {
+          jsonrpc: "2.0",
+          id: currentRequestId,
+          method: "tools/call",
+          params: {
+            name: "search",
+            arguments: {
+              query: query,
+            },
+          },
+        };
+
+        // Track this request
+        setRequestContext(currentRequestId, { tool: "search", query: query });
+
+        // Clear previous results
+        document.getElementById("searchResults").textContent = "Searching...";
+
+        await sendMCPRequest(request);
+      }
+
+      async function fetchContent() {
+        const url = document.getElementById("fetchUrl").value.trim();
+        if (!url) {
+          alert("Please enter a URL");
+          return;
+        }
+
+        const currentRequestId = requestId++;
+        const request = {
+          jsonrpc: "2.0",
+          id: currentRequestId,
+          method: "tools/call",
+          params: {
+            name: "fetch_web_content",
+            arguments: {
+              url: url,
+            },
+          },
+        };
+
+        // Track this request
+        setRequestContext(currentRequestId, {
+          tool: "fetch_web_content",
+          url: url,
+        });
+
+        // Clear previous results
+        document.getElementById("fetchResults").textContent =
+          "Fetching content...";
+
+        await sendMCPRequest(request);
+      }
+
+      function clearLog() {
+        document.getElementById("log").innerHTML = "";
+      }
+
+      // Initialize page
+      updateStatus(false);
+      log("Page loaded. Click Connect to start.");
+    </script>
+  </body>
+</html>

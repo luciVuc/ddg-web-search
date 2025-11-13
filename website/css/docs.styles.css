@@ -1,0 +1,224 @@
+.docs-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 40px;
+  padding: 0 20px;
+}
+
+.docs-sidebar {
+  position: sticky;
+  top: 90px;
+  height: fit-content;
+  background: var(--background-white);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.docs-nav h3 {
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+}
+
+.docs-nav ul {
+  list-style: none;
+}
+
+.docs-nav ul li {
+  margin-bottom: 8px;
+}
+
+.docs-link {
+  color: var(--text-color);
+  text-decoration: none;
+  display: block;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: var(--transition);
+  font-size: 0.9rem;
+}
+
+.docs-link:hover {
+  background: var(--background-light);
+  color: var(--primary-color);
+}
+
+.docs-content {
+  max-width: none;
+  padding: 20px 0;
+}
+
+.docs-header {
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.docs-header h1 {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.docs-header p {
+  font-size: 1.1rem;
+  color: var(--text-light);
+}
+
+.docs-section {
+  margin-bottom: 60px;
+  scroll-margin-top: 100px;
+}
+
+.docs-section h2 {
+  font-size: 2rem;
+  color: var(--text-color);
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+.docs-section h3 {
+  font-size: 1.4rem;
+  color: var(--text-color);
+  margin: 30px 0 15px 0;
+}
+
+.docs-section h4 {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  margin: 25px 0 10px 0;
+}
+
+.docs-section h5 {
+  font-size: 1rem;
+  color: var(--text-color);
+  margin: 20px 0 10px 0;
+  font-weight: 600;
+}
+
+.docs-section p {
+  color: var(--text-color);
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.docs-section ul,
+.docs-section ol {
+  margin: 15px 0;
+  padding-left: 30px;
+}
+
+.docs-section li {
+  margin-bottom: 8px;
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+.method-signature {
+  background: var(--background-light);
+  padding: 15px 20px;
+  border-radius: var(--border-radius);
+  border-left: 4px solid var(--primary-color);
+  margin: 20px 0;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+}
+
+.method-signature code {
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.method {
+  background: var(--background-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 25px;
+  margin: 25px 0;
+  box-shadow: var(--shadow);
+}
+
+.command,
+.mcp-tool {
+  background: var(--background-light);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  margin: 20px 0;
+  border-left: 4px solid var(--accent-color);
+}
+
+.code-block {
+  position: relative;
+  background: #1e1e1e;
+  border-radius: var(--border-radius);
+  padding: 20px;
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
+.code-block code {
+  color: #fff;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.copy-btn:hover {
+  background: var(--primary-dark);
+}
+
+@media (max-width: 1024px) {
+  .docs-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .docs-sidebar {
+    position: static;
+    order: 2;
+  }
+
+  .docs-content {
+    order: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .docs-header h1 {
+    font-size: 2rem;
+  }
+
+  .docs-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .method-signature code {
+    font-size: 0.85rem;
+  }
+
+  .code-block {
+    padding: 15px;
+  }
+
+  .code-block code {
+    font-size: 0.8rem;
+  }
+}

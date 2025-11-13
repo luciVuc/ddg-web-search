@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "ddg-web-search": {
+      "command": "npx",
+      "args": ["@lucid-spark/ddg-web-search", "mcp"],
+      "env": {}
+    }
+  }
+}

@@ -1,0 +1,7 @@
+node_modules
+coverage
+dist
+dist/fetcher
+dist/searcher
+dist/types
+dist/utils

@@ -1,0 +1,91 @@
+{
+  "name": "ddg-web-search",
+  "version": "1.0.0",
+  "description": "A comprehensive package for searching the web and fetching web content programmatically, through a CLI interface, or through a Model Context Protocol (MCP) server.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "ddg-web-search": "dist/cli.js",
+    "ddg-web-search-mcp": "dist/mcp.js"
+  },
+  "scripts": {
+    "format": "prettier --write",
+    "format:staged": "pretty-quick --staged --no-restage --verbose",
+    "build": "tsc",
+    "test": "jest --coverage",
+    "start": "node dist/index.js",
+    "dev": "npx ts-node examples/basic-usage.ts",
+    "test-package": "npx ts-node test-package.ts",
+    "test-complete": "npx ts-node test-complete.ts",
+    "cli": "npx ts-node src/cli.ts",
+    "cli:build": "npm run build && node dist/cli.js",
+    "inspect": "npx -y @modelcontextprotocol/inspector npm run mcp",
+    "inspect:http": "npx -y @modelcontextprotocol/inspector npm run mcp:http",
+    "inspect:build": "npx -y @modelcontextprotocol/inspector npm run mcp:build",
+    "inspect:http:build": "npx -y @modelcontextprotocol/inspector npm run mcp:http:build",
+    "mcp": "npx ts-node src/mcp.ts",
+    "mcp:build": "npm run build && node dist/mcp.js",
+    "mcp:http": "npx ts-node src/mcp.ts --transport http",
+    "mcp:http:build": "npm run build && node dist/mcp.js --transport http"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucivuc/ddg-web-search.git"
+  },
+  "keywords": [
+    "duckduckgo",
+    "search",
+    "web",
+    "fetcher",
+    "typescript",
+    "cli",
+    "command-line",
+    "api",
+    "rate-limiting",
+    "http-client",
+    "mcp",
+    "model-context-protocol",
+    "mcp-server"
+  ],
+  "author": "DDG Web Search Contributors",
+  "license": "MIT",
+  "homepage": "https://github.com/lucivuc/ddg-web-search#readme",
+  "bugs": {
+    "url": "https://github.com/lucivuc/ddg-web-search/issues"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.4.0",
+    "@types/puppeteer": "^5.4.7",
+    "axios": "^1.6.0",
+    "cheerio": "^1.1.2",
+    "puppeteer": "^24.28.0",
+    "turndown": "^7.2.2"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.35",
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.8.10",
+    "@types/turndown": "^5.0.6",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.6.2",
+    "pretty-quick": "^4.2.2",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2"
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:@typescript-eslint/recommended"
+    ]
+  }
+}

@@ -70,6 +70,14 @@ export class CLI {
       "white",
     );
     this.log("  interactive         - Start interactive mode", "white");
+    this.log(
+      "  mcp                 - Start MCP server (stdio transport)",
+      "white",
+    );
+    this.log(
+      "  mcp-http            - Start MCP server (HTTP transport)",
+      "white",
+    );
     this.log("  help                - Show this help message", "white");
     this.log("  version             - Show version information", "white");
     this.log("");
@@ -77,6 +85,8 @@ export class CLI {
     this.log('  ddg-web-search search "TypeScript tutorials"', "yellow");
     this.log("  ddg-web-search fetch https://example.com", "yellow");
     this.log("  ddg-web-search interactive", "yellow");
+    this.log("  ddg-web-search mcp", "yellow");
+    this.log("  ddg-web-search mcp-http", "yellow");
     this.log("");
   }
 
@@ -244,6 +254,18 @@ export class CLI {
             await this.displayVersion();
             break;
 
+          case "mcp":
+            this.log("🚀 Starting MCP server (stdio)...", "green");
+            rl.close();
+            await this.startMCPServer(false);
+            return;
+
+          case "mcp-http":
+            this.log("🚀 Starting MCP server (HTTP)...", "green");
+            rl.close();
+            await this.startMCPServer(true);
+            return;
+
           case "clear":
           case "cls":
             console.clear();
@@ -269,6 +291,61 @@ export class CLI {
     };
 
     prompt();
+  }
+
+  async startMCPServer(httpMode: boolean = false): Promise<void> {
+    try {
+      if (httpMode) {
+        this.logInfo("Starting MCP server with HTTP transport...");
+        this.log(
+          "🌐 Server will be available at http://localhost:3001",
+          "cyan",
+        );
+        this.log("📡 SSE endpoint: http://localhost:3001/sse", "cyan");
+      } else {
+        this.logInfo("Starting MCP server with stdio transport...");
+        this.log("📡 Server ready for MCP client connections", "cyan");
+      }
+
+      const { MCPServer } = await import("./mcp");
+      const server = new MCPServer({
+        transport: httpMode ? "http" : "stdio",
+        port: httpMode ? 3001 : undefined,
+        host: httpMode ? "localhost" : undefined,
+      });
+
+      // Handle graceful shutdown
+      const cleanup = async () => {
+        this.log("\n🛑 Shutting down MCP server...", "yellow");
+        try {
+          await server.close();
+          this.logSuccess("MCP server stopped successfully");
+        } catch (error) {
+          this.logError(`Error stopping server: ${error}`);
+        }
+        process.exit(0);
+      };
+
+      process.on("SIGINT", cleanup);
+      process.on("SIGTERM", cleanup);
+
+      if (httpMode) {
+        this.log("\n💡 Tips:", "bright");
+        this.log("  • Visit http://localhost:3001 for server info", "white");
+        this.log("  • Use Ctrl+C to stop the server", "white");
+        this.log("");
+      } else {
+        this.log("\n💡 Tips:", "bright");
+        this.log("  • Server is ready for MCP client connections", "white");
+        this.log("  • Use Ctrl+C to stop the server", "white");
+        this.log("");
+      }
+
+      await server.run();
+    } catch (error) {
+      this.logError(`Failed to start MCP server: ${error}`);
+      process.exit(1);
+    }
   }
 
   async run(args: string[]): Promise<void> {
@@ -319,6 +396,14 @@ export class CLI {
       case "interactive":
       case "i":
         await this.interactive();
+        break;
+
+      case "mcp":
+        await this.startMCPServer(false);
+        break;
+
+      case "mcp-http":
+        await this.startMCPServer(true);
         break;
 
       case "help":

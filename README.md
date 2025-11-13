@@ -180,6 +180,12 @@ ddg-web-search fetch https://example.com
 # Start interactive mode
 ddg-web-search interactive
 
+# Start MCP server (stdio transport)
+ddg-web-search mcp
+
+# Start MCP server (HTTP transport)
+ddg-web-search mcp-http
+
 # Show help
 ddg-web-search help
 
@@ -199,6 +205,8 @@ In interactive mode, you can use these commands:
 
 - `search <query>` or `s <query>` - Search the web
 - `fetch <url>` or `f <url>` - Fetch web content
+- `mcp` - Start MCP server (stdio transport)
+- `mcp-http` - Start MCP server (HTTP transport)
 - `help` or `h` - Show help
 - `version` or `v` - Show version
 - `clear` or `cls` - Clear screen
@@ -215,6 +223,12 @@ ddg-web-search fetch https://httpbin.org/html
 
 # Start interactive session
 ddg-web-search interactive
+
+# Start MCP server with stdio transport
+ddg-web-search mcp
+
+# Start MCP server with HTTP transport
+ddg-web-search mcp-http
 
 # Get help
 ddg-web-search help

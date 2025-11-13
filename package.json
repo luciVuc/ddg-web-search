@@ -1,5 +1,5 @@
 {
-  "name": "ddg-web-search",
+  "name": "@lucid-spark/ddg-web-search",
   "version": "1.0.2",
   "description": "A comprehensive package for searching the web and fetching web content programmatically, through a CLI interface, or through a Model Context Protocol (MCP) server.",
   "main": "dist/index.js",
@@ -88,5 +88,10 @@
     "extends": [
       "plugin:@typescript-eslint/recommended"
     ]
+  },
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "tests"
   }
 }

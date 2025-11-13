@@ -79,7 +79,7 @@ website/
 ### **GitHub Pages Setup**
 
 1. **Repository Settings**: Enable GitHub Pages in repository settings
-2. **Source Branch**: Set source to `main` branch, `/website` folder
+2. **Source Branch**: Set source to `main` branch, `/docs` folder
 3. **Custom Domain** (optional): Configure custom domain in settings
 4. **HTTPS**: Enable HTTPS enforcement
 
@@ -87,7 +87,7 @@ website/
 
 ```bash
 # Navigate to website directory
-cd website/
+cd docs/
 
 # Serve locally using Python
 python -m http.server 8000

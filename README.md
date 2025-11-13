@@ -18,13 +18,13 @@ A comprehensive package for searching the web and fetching web content programma
 To install the package globally for CLI and MCP usage:
 
 ```bash
-npm install -g ddg-web-search
+npm install -g @lucid-spark/ddg-web-search
 ```
 
 Or install locally in your project:
 
 ```bash
-npm install ddg-web-search
+npm install @lucid-spark/ddg-web-search
 ```
 
 For MCP server dependencies (automatically included):
@@ -66,7 +66,7 @@ The package includes a Model Context Protocol (MCP) server that exposes the sear
 ddg-web-search-mcp
 
 # Using npx
-npx ddg-web-search mcp
+npx @lucid-spark/ddg-web-search mcp
 
 # Using built files
 npm run build
@@ -111,7 +111,7 @@ Or using npx:
   "mcpServers": {
     "ddg-web-search": {
       "command": "npx",
-      "args": ["ddg-web-search", "mcp"],
+      "args": ["@lucid-spark/ddg-web-search", "mcp"],
       "env": {}
     }
   }

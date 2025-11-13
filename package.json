@@ -1,6 +1,6 @@
 {
   "name": "ddg-web-search",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A comprehensive package for searching the web and fetching web content programmatically, through a CLI interface, or through a Model Context Protocol (MCP) server.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

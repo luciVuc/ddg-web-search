@@ -147,7 +147,7 @@ describe("CLI", () => {
     it("should handle version command", async () => {
       await cli.run(["version"]);
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining("📦 Package: ddg-web-search"),
+        expect.stringContaining("📦 Package: @lucid-spark/ddg-web-search"),
       );
     });
 

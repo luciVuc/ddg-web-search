@@ -268,10 +268,30 @@ if (result.success) {
               </div>
             </div>
 
+            <div class="command">
+              <h4>ddg-web-search mcp</h4>
+              <p>Start MCP server with stdio transport for AI assistant integration.</p>
+              <div class="code-block">
+                <code>ddg-web-search mcp</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+            </div>
+
+            <div class="command">
+              <h4>ddg-web-search mcp-http</h4>
+              <p>Start MCP server with HTTP transport for web-based AI assistant integration.</p>
+              <div class="code-block">
+                <code>ddg-web-search mcp-http</code>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+              </div>
+            </div>
+
             <h3>Interactive Mode Commands</h3>
             <ul>
               <li><code>search &lt;query&gt;</code> or <code>s &lt;query&gt;</code> - Search the web</li>
               <li><code>fetch &lt;url&gt;</code> or <code>f &lt;url&gt;</code> - Fetch web content</li>
+              <li><code>mcp</code> - Start MCP server (stdio transport)</li>
+              <li><code>mcp-http</code> - Start MCP server (HTTP transport)</li>
               <li><code>help</code> or <code>h</code> - Show help</li>
               <li><code>version</code> or <code>v</code> - Show version</li>
               <li><code>clear</code> or <code>cls</code> - Clear screen</li>

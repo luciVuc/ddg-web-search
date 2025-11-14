@@ -1,220 +1,258 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DDG Web Search</title>
+    <meta
+      name="description"
+      content="A comprehensive package for searching the web and fetching web content programmatically, through a CLI interface, or through a Model Context Protocol (MCP) server."
+    />
+    <meta
+      name="keywords"
+      content="duckduckgo, search, typescript, mcp, cli, web scraping, rate limiting"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iI0RFNTgzMyIvPgo8cGF0aCBkPSJNOCAxNkMxMiAxNiAxNiAxMiAxNiA4QzE2IDEyIDIwIDE2IDI0IDE2QzIwIDE2IDE2IDIwIDE2IDI0QzE2IDIwIDEyIDE2IDggMTZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DDG Web Search</title>
-  <meta name="description"
-    content="A comprehensive package for searching the web and fetching web content programmatically, through a CLI interface, or through a Model Context Protocol (MCP) server." />
-  <meta name="keywords" content="duckduckgo, search, typescript, mcp, cli, web scraping, rate limiting" />
-  <link rel="stylesheet" href="css/styles.css" />
-  <link rel="icon" type="image/x-icon"
-    href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iI0RFNTgzMyIvPgo8cGF0aCBkPSJNOCAxNkMxMiAxNiAxNiAxMiAxNiA4QzE2IDEyIDIwIDE2IDI0IDE2QzIwIDE2IDE2IDIwIDE2IDI0QzE2IDIwIDEyIDE2IDggMTZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" />
-</head>
-
-<body>
-  <nav class="navbar">
-    <div class="nav-container">
-      <div class="nav-logo">
-        <span class="logo-icon">🦆</span>
-        <span class="logo-text">DDG Web Search</span>
-      </div>
-      <ul class="nav-menu">
-        <li><a href="#home" class="nav-link">Home</a></li>
-        <li><a href="#features" class="nav-link">Features</a></li>
-        <li><a href="#installation" class="nav-link">Installation</a></li>
-        <li><a href="#usage" class="nav-link">Usage</a></li>
-        <li><a href="#api-overview" class="nav-link">API</a></li>
-        <li><a href="examples.html" class="nav-link">Examples</a></li>
-        <li><a href="docs.html" class="nav-link">Documentation</a></li>
-        <li>
-          <a href="https://github.com/lucivuc/ddg-web-search" class="nav-link github-link"
-            target="_blank">GitHub</a>
-        </li>
-      </ul>
-      <div class="hamburger">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-      </div>
-    </div>
-  </nav>
-
-  <header class="hero" id="home">
-    <div class="hero-container">
-      <div class="hero-content">
-        <h1 class="hero-title">
-          <span class="title-main">DDG Web Search</span>
-          <span class="title-sub">Package</span>
-        </h1>
-        <p class="hero-description">
-          A comprehensive package for searching the web and fetching web
-          content programmatically, through a CLI interface, or through a
-          Model Context Protocol (MCP) server.
-        </p>
-        <div class="hero-buttons">
-          <a href="#installation" class="btn btn-primary">Get Started</a>
-          <a href="https://github.com/lucivuc/ddg-web-search" class="btn btn-secondary" target="_blank">View on
-            GitHub</a>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-logo">
+          <span class="logo-icon">🦆</span>
+          <span class="logo-text">DDG Web Search</span>
         </div>
-        <div class="hero-badges">
-          <img src="https://img.shields.io/npm/v/ddg-web-search.svg" alt="npm version" />
-          <img src="https://img.shields.io/npm/dm/ddg-web-search.svg" alt="npm downloads" />
-          <img src="https://img.shields.io/github/license/lucivuc/ddg-web-search.svg" alt="license" />
-          <img src="https://img.shields.io/badge/TypeScript-Ready-blue.svg" alt="TypeScript" />
+        <ul class="nav-menu">
+          <li><a href="#home" class="nav-link">Home</a></li>
+          <li><a href="#features" class="nav-link">Features</a></li>
+          <li><a href="#installation" class="nav-link">Installation</a></li>
+          <li><a href="#usage" class="nav-link">Usage</a></li>
+          <li><a href="#api-overview" class="nav-link">API</a></li>
+          <li><a href="examples.html" class="nav-link">Examples</a></li>
+          <li><a href="docs.html" class="nav-link">Documentation</a></li>
+          <li>
+            <a
+              href="https://github.com/lucivuc/ddg-web-search"
+              class="nav-link github-link"
+              target="_blank"
+              >GitHub</a
+            >
+          </li>
+        </ul>
+        <div class="hamburger">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
         </div>
       </div>
-      <div class="hero-demo">
-        <div class="terminal">
-          <div class="terminal-header">
-            <span class="terminal-title">Terminal</span>
-            <div class="terminal-buttons">
-              <span class="btn-close"></span>
-              <span class="btn-minimize"></span>
-              <span class="btn-maximize"></span>
-            </div>
+    </nav>
+
+    <header class="hero" id="home">
+      <div class="hero-container">
+        <div class="hero-content">
+          <h1 class="hero-title">
+            <span class="title-main">DDG Web Search</span>
+            <span class="title-sub">Package</span>
+          </h1>
+          <p class="hero-description">
+            A comprehensive package for searching the web and fetching web
+            content programmatically, through a CLI interface, or through a
+            Model Context Protocol (MCP) server.
+          </p>
+          <div class="hero-buttons">
+            <a href="#installation" class="btn btn-primary">Get Started</a>
+            <a
+              href="https://github.com/lucivuc/ddg-web-search"
+              class="btn btn-secondary"
+              target="_blank"
+              >View on GitHub</a
+            >
           </div>
-          <div class="terminal-body">
-            <div class="terminal-line">
-              <span class="prompt">$</span>
-              <span class="command">npm install @lucid-spark/ddg-web-search</span>
+          <div class="hero-badges">
+            <img
+              src="https://img.shields.io/npm/v/@lucid-spark/ddg-web-search.svg"
+              alt="npm version"
+            />
+            <img
+              src="https://img.shields.io/npm/dm/@lucid-spark/ddg-web-search.svg"
+              alt="npm downloads"
+            />
+            <img
+              src="https://img.shields.io/github/license/lucivuc/ddg-web-search.svg"
+              alt="license"
+            />
+            <img
+              src="https://img.shields.io/badge/TypeScript-Ready-blue.svg"
+              alt="TypeScript"
+            />
+          </div>
+        </div>
+        <div class="hero-demo">
+          <div class="terminal">
+            <div class="terminal-header">
+              <span class="terminal-title">Terminal</span>
+              <div class="terminal-buttons">
+                <span class="btn-close"></span>
+                <span class="btn-minimize"></span>
+                <span class="btn-maximize"></span>
+              </div>
             </div>
-            <div class="terminal-line">
-              <span class="prompt">$</span>
-              <span class="command">ddg-web-search search "TypeScript tutorials"</span>
-            </div>
-            <div class="terminal-output">
-              <div class="search-result">
-                <span class="result-title">🔍 Searching for: "TypeScript tutorials"</span><br />
-                <span class="result-title">✅ Found 5 search results:</span><br />
-                <span class="result-item">1. TypeScript Handbook - Official Guide</span><br />
-                <span class="result-url">
-                  🔗 https://typescriptlang.org/docs/</span><br />
-                <span class="result-snippet">
-                  📄 Learn TypeScript from the ground up...</span>
+            <div class="terminal-body">
+              <div class="terminal-line">
+                <span class="prompt">$</span>
+                <span class="command"
+                  >npm install @lucid-spark/ddg-web-search</span
+                >
+              </div>
+              <div class="terminal-line">
+                <span class="prompt">$</span>
+                <span class="command"
+                  >ddg-web-search search "TypeScript tutorials"</span
+                >
+              </div>
+              <div class="terminal-output">
+                <div class="search-result">
+                  <span class="result-title"
+                    >🔍 Searching for: "TypeScript tutorials"</span
+                  ><br />
+                  <span class="result-title">✅ Found 5 search results:</span
+                  ><br />
+                  <span class="result-item"
+                    >1. TypeScript Handbook - Official Guide</span
+                  ><br />
+                  <span class="result-url">
+                    🔗 https://typescriptlang.org/docs/</span
+                  ><br />
+                  <span class="result-snippet">
+                    📄 Learn TypeScript from the ground up...</span
+                  >
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <section class="features" id="features">
-    <div class="container">
-      <h2 class="section-title">Features</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">🔍</div>
-          <h3>DuckDuckGo Web Search</h3>
-          <p>
-            Search the web using DuckDuckGo with browser automation, captcha
-            handling, anti-detection measures, and JavaScript rendering
-            support.
-          </p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📄</div>
-          <h3>Web Content Fetcher</h3>
-          <p>
-            Fetch and parse content from web pages with intelligent
-            HTML-to-Markdown conversion, metadata extraction, and
-            comprehensive error handling.
-          </p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <h3>MCP Server</h3>
-          <p>
-            Model Context Protocol server with both stdio and HTTP (SSE)
-            transport support for seamless AI assistant integration.
-          </p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">💻</div>
-          <h3>CLI Interface</h3>
-          <p>
-            Interactive command line interface with colorful output, resource
-            management, and engaging user experience.
-          </p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🛡️</div>
-          <h3>Rate Limiting</h3>
-          <p>
-            Conservative rate management with browser automation timing to
-            respect server resources and avoid detection.
-          </p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📝</div>
-          <h3>TypeScript</h3>
-          <p>
-            Full TypeScript support with comprehensive type definitions,
-            enhanced interfaces, and excellent developer experience.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="installation" id="installation">
-    <div class="container">
-      <h2 class="section-title">Installation</h2>
-      <div class="installation-grid">
-        <div class="install-option">
-          <h3>Global Installation</h3>
-          <p>Install globally for CLI and MCP usage:</p>
-          <div class="code-block">
-            <code>npm install -g @lucid-spark/ddg-web-search</code>
-            <button class="copy-btn" onclick="copyToClipboard(this)">
-              Copy
-            </button>
+    <section class="features" id="features">
+      <div class="container">
+        <h2 class="section-title">Features</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🔍</div>
+            <h3>DuckDuckGo Web Search</h3>
+            <p>
+              Search the web using DuckDuckGo with browser automation, captcha
+              handling, anti-detection measures, and JavaScript rendering
+              support.
+            </p>
           </div>
-        </div>
-        <div class="install-option">
-          <h3>Local Installation</h3>
-          <p>Install locally in your project:</p>
-          <div class="code-block">
-            <code>npm install @lucid-spark/ddg-web-search</code>
-            <button class="copy-btn" onclick="copyToClipboard(this)">
-              Copy
-            </button>
+          <div class="feature-card">
+            <div class="feature-icon">📄</div>
+            <h3>Web Content Fetcher</h3>
+            <p>
+              Fetch and parse content from web pages with intelligent
+              HTML-to-Markdown conversion, metadata extraction, and
+              comprehensive error handling.
+            </p>
           </div>
-        </div>
-        <div class="install-option">
-          <h3>No Installation</h3>
-          <p>Use it without installing it:</p>
-          <div class="code-block">
-            <code>npx @lucid-spark/ddg-web-search</code>
-            <button class="copy-btn" onclick="copyToClipboard(this)">
-              Copy
-            </button>
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>MCP Server</h3>
+            <p>
+              Model Context Protocol server with both stdio and HTTP (SSE)
+              transport support for seamless AI assistant integration.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">💻</div>
+            <h3>CLI Interface</h3>
+            <p>
+              Interactive command line interface with colorful output, resource
+              management, and engaging user experience.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3>Rate Limiting</h3>
+            <p>
+              Conservative rate management with browser automation timing to
+              respect server resources and avoid detection.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📝</div>
+            <h3>TypeScript</h3>
+            <p>
+              Full TypeScript support with comprehensive type definitions,
+              enhanced interfaces, and excellent developer experience.
+            </p>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="usage" id="usage">
-    <div class="container">
-      <h2 class="section-title">Quick Start</h2>
-      <div class="usage-tabs">
-        <div class="tab-buttons">
-          <button class="tab-btn active" onclick="showTab('cli')">
-            CLI Usage
-          </button>
-          <button class="tab-btn" onclick="showTab('mcp')">MCP Server</button>
-          <button class="tab-btn" onclick="showTab('api')">
-            Programmatic API
-          </button>
+    <section class="installation" id="installation">
+      <div class="container">
+        <h2 class="section-title">Installation</h2>
+        <div class="installation-grid">
+          <div class="install-option">
+            <h3>Global Installation</h3>
+            <p>Install globally for CLI and MCP usage:</p>
+            <div class="code-block">
+              <code>npm install -g @lucid-spark/ddg-web-search</code>
+              <button class="copy-btn" onclick="copyToClipboard(this)">
+                Copy
+              </button>
+            </div>
+          </div>
+          <div class="install-option">
+            <h3>Local Installation</h3>
+            <p>Install locally in your project:</p>
+            <div class="code-block">
+              <code>npm install @lucid-spark/ddg-web-search</code>
+              <button class="copy-btn" onclick="copyToClipboard(this)">
+                Copy
+              </button>
+            </div>
+          </div>
+          <div class="install-option">
+            <h3>No Installation</h3>
+            <p>Use it without installing it:</p>
+            <div class="code-block">
+              <code>npx @lucid-spark/ddg-web-search</code>
+              <button class="copy-btn" onclick="copyToClipboard(this)">
+                Copy
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
+    </section>
 
-        <div class="tab-content active" id="cli">
-          <h3>Command Line Interface</h3>
-          <div class="code-example">
-            <pre><code># Search the web with browser automation
+    <section class="usage" id="usage">
+      <div class="container">
+        <h2 class="section-title">Quick Start</h2>
+        <div class="usage-tabs">
+          <div class="tab-buttons">
+            <button class="tab-btn active" onclick="showTab('cli')">
+              CLI Usage
+            </button>
+            <button class="tab-btn" onclick="showTab('mcp')">MCP Server</button>
+            <button class="tab-btn" onclick="showTab('api')">
+              Programmatic API
+            </button>
+          </div>
+
+          <div class="tab-content active" id="cli">
+            <h3>Command Line Interface</h3>
+            <div class="code-example">
+              <pre><code># Search the web with browser automation
 ddg-web-search search "TypeScript tutorials"
 
 # Fetch content with intelligent parsing
@@ -231,13 +269,13 @@ ddg-web-search mcp-http
 
 # Show help
 ddg-web-search help</code></pre>
+            </div>
           </div>
-        </div>
 
-        <div class="tab-content" id="mcp">
-          <h3>MCP Server Setup</h3>
-          <div class="code-example">
-            <pre><code># Start MCP server with stdio transport
+          <div class="tab-content" id="mcp">
+            <h3>MCP Server Setup</h3>
+            <div class="code-example">
+              <pre><code># Start MCP server with stdio transport
 ddg-web-search-mcp
 
 # Start with HTTP transport
@@ -253,13 +291,13 @@ node dist/mcp.js --transport http --port 3001
     }
   }
 }</code></pre>
+            </div>
           </div>
-        </div>
 
-        <div class="tab-content" id="api">
-          <h3>Programmatic Usage</h3>
-          <div class="code-example">
-            <pre><code>import { WebSearcher, WebContentFetcher } from "@lucid-spark/ddg-web-search";
+          <div class="tab-content" id="api">
+            <h3>Programmatic Usage</h3>
+            <div class="code-example">
+              <pre><code>import { WebSearcher, WebContentFetcher } from "@lucid-spark/ddg-web-search";
 
 const searcher = new WebSearcher();
 const fetcher = new WebContentFetcher();
@@ -272,119 +310,125 @@ const content = await fetcher.fetch("https://example.com");
 
 // Important: cleanup browser resources
 await searcher.close();</code></pre>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="api-overview" id="api-overview">
-    <div class="container">
-      <h2 class="section-title">API Overview</h2>
-      <div class="api-grid">
-        <div class="api-card">
-          <h3>WebSearcher</h3>
-          <div class="api-method">
-            <code>search(query: string): Promise&lt;SearchResult[]&gt;</code>
-            <p>
-              Search the web using DuckDuckGo with browser automation with
-              captcha handling
-            </p>
+    <section class="api-overview" id="api-overview">
+      <div class="container">
+        <h2 class="section-title">API Overview</h2>
+        <div class="api-grid">
+          <div class="api-card">
+            <h3>WebSearcher</h3>
+            <div class="api-method">
+              <code>search(query: string): Promise&lt;SearchResult[]&gt;</code>
+              <p>
+                Search the web using DuckDuckGo with browser automation with
+                captcha handling
+              </p>
+            </div>
           </div>
-        </div>
-        <div class="api-card">
-          <h3>WebContentFetcher</h3>
-          <div class="api-method">
-            <code>fetch(url: string): Promise&lt;FetchResult&gt;</code>
-            <p>
-              Fetch and parse content with intelligent HTML-to-Markdown
-              conversion
-            </p>
+          <div class="api-card">
+            <h3>WebContentFetcher</h3>
+            <div class="api-method">
+              <code>fetch(url: string): Promise&lt;FetchResult&gt;</code>
+              <p>
+                Fetch and parse content with intelligent HTML-to-Markdown
+                conversion
+              </p>
+            </div>
           </div>
-        </div>
-        <div class="api-card">
-          <h3>CLI</h3>
-          <div class="api-method">
-            <code>interactive(): Promise&lt;void&gt;</code>
-            <p>
-              Start interactive command-line interface with resource
-              management
-            </p>
+          <div class="api-card">
+            <h3>CLI</h3>
+            <div class="api-method">
+              <code>interactive(): Promise&lt;void&gt;</code>
+              <p>
+                Start interactive command-line interface with resource
+                management
+              </p>
+            </div>
           </div>
-        </div>
-        <div class="api-card">
-          <h3>MCPServer</h3>
-          <div class="api-method">
-            <code>run(): Promise&lt;void&gt;</code>
-            <p>
-              Start MCP server with stdio or HTTP transport for AI assistant
-              integration
-            </p>
+          <div class="api-card">
+            <h3>MCPServer</h3>
+            <div class="api-method">
+              <code>run(): Promise&lt;void&gt;</code>
+              <p>
+                Start MCP server with stdio or HTTP transport for AI assistant
+                integration
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="cta">
-    <div class="container">
-      <h2>Ready to Get Started?</h2>
-      <p>
-        Install the package and start searching the web in your TypeScript
-        projects today!
-      </p>
-      <div class="cta-buttons">
-        <a href="docs.html" class="btn btn-primary">Read Full Documentation</a>
-        <a href="examples.html" class="btn btn-secondary">View Examples</a>
+    <section class="cta">
+      <div class="container">
+        <h2>Ready to Get Started?</h2>
+        <p>
+          Install the package and start searching the web in your TypeScript
+          projects today!
+        </p>
+        <div class="cta-buttons">
+          <a href="docs.html" class="btn btn-primary"
+            >Read Full Documentation</a
+          >
+          <a href="examples.html" class="btn btn-secondary">View Examples</a>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section">
-          <h3>DDG Web Search</h3>
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>DDG Web Search</h3>
+            <p>
+              A comprehensive package for searching the web and fetching web
+              content.
+            </p>
+          </div>
+          <div class="footer-section">
+            <h4>Links</h4>
+            <ul>
+              <li><a href="docs.html">Documentation</a></li>
+              <li><a href="examples.html">Examples</a></li>
+              <li>
+                <a href="https://github.com/lucivuc/ddg-web-search">GitHub</a>
+              </li>
+              <li>
+                <a href="https://npmjs.com/@lucid-spark/ddg-web-search">npm</a>
+              </li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="#api-overview">API Reference</a></li>
+              <li>
+                <a href="https://github.com/lucivuc/ddg-web-search/issues"
+                  >Report Issues</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://github.com/lucivuc/ddg-web-search/blob/main/LICENSE"
+                  >License</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
           <p>
-            A comprehensive package for searching the web and fetching web
-            content.
+            &copy; 2025 DDG Web Search Contributors. Licensed under MIT License.
           </p>
         </div>
-        <div class="footer-section">
-          <h4>Links</h4>
-          <ul>
-            <li><a href="docs.html">Documentation</a></li>
-            <li><a href="examples.html">Examples</a></li>
-            <li>
-              <a href="https://github.com/lucivuc/ddg-web-search">GitHub</a>
-            </li>
-            <li>
-              <a href="https://npmjs.com/@lucid-spark/ddg-web-search">npm</a>
-            </li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h4>Resources</h4>
-          <ul>
-            <li><a href="#api-overview">API Reference</a></li>
-            <li>
-              <a href="https://github.com/lucivuc/ddg-web-search/issues">Report Issues</a>
-            </li>
-            <li>
-              <a href="https://github.com/lucivuc/ddg-web-search/blob/main/LICENSE">License</a>
-            </li>
-          </ul>
-        </div>
       </div>
-      <div class="footer-bottom">
-        <p>
-          &copy; 2025 DDG Web Search Contributors. Licensed under MIT License.
-        </p>
-      </div>
-    </div>
-  </footer>
+    </footer>
 
-  <script src="js/main.js"></script>
-</body>
-
+    <script src="js/main.js"></script>
+  </body>
 </html>

@@ -58,7 +58,7 @@ class MCPServer {
 
     this.server = new Server({
       name: "ddg-web-search",
-      version: "1.0.3",
+      version: "1.0.4",
     });
 
     this.setupToolHandlers();
@@ -317,7 +317,7 @@ class MCPServer {
           res.end(
             JSON.stringify({
               name: "DDG Web Search MCP Server",
-              version: "1.0.3",
+              version: "1.0.4",
               transport: "http",
               endpoints: {
                 sse: "/sse",

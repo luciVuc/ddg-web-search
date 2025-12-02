@@ -45,6 +45,10 @@ export class RateLimiter {
     // If we're under the limit, allow the request
     if (this.requests < this.limit) {
       this.requests++;
+      // Update last request time for each request to track properly
+      if (this.requests === 1) {
+        this.lastRequestTime = now;
+      }
       return Promise.resolve();
     }
 

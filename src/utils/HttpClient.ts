@@ -1,5 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 
+// Constants
+const DEFAULT_TIMEOUT_MS = 10000;
+
 /**
  * Singleton HTTP client for making HTTP requests
  * Provides centralized error handling and logging
@@ -29,7 +32,7 @@ export class HttpClient {
   public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     try {
       const response: AxiosResponse<T> = await axios.get(url, {
-        timeout: 10000, // 10 second timeout
+        timeout: DEFAULT_TIMEOUT_MS,
         ...config,
       });
       return response.data;
@@ -53,7 +56,7 @@ export class HttpClient {
   ): Promise<T> {
     try {
       const response: AxiosResponse<T> = await axios.post(url, data, {
-        timeout: 10000, // 10 second timeout
+        timeout: DEFAULT_TIMEOUT_MS,
         ...config,
       });
       return response.data;

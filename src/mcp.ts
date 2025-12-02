@@ -13,6 +13,11 @@ import { createServer, IncomingMessage, ServerResponse } from "node:http";
 import { URL } from "node:url";
 import { WebSearcher, FetchResult, SearchResult, WebContentFetcher } from ".";
 
+// Constants
+const MAX_CONTENT_LENGTH = 10000;
+const DEFAULT_HTTP_PORT = 3001;
+const DEFAULT_HTTP_HOST = "localhost";
+
 interface SearchToolArgs {
   query?: string;
 }
@@ -48,8 +53,8 @@ class MCPServer {
 
   constructor(options: ServerOptions = { transport: "stdio" }) {
     this.options = {
-      port: 3001,
-      host: "localhost",
+      port: DEFAULT_HTTP_PORT,
+      host: DEFAULT_HTTP_HOST,
       ...options,
     };
 
@@ -227,10 +232,9 @@ class MCPServer {
       }
 
       // Truncate very long content
-      const maxLength = 10000;
       const content =
-        result.data?.content.length > maxLength
-          ? `${result.data?.content.substring(0, maxLength)}...\n\n[Content truncated - showing first ${maxLength} characters]`
+        result.data?.content.length > MAX_CONTENT_LENGTH
+          ? `${result.data?.content.substring(0, MAX_CONTENT_LENGTH)}...\n\n[Content truncated - showing first ${MAX_CONTENT_LENGTH} characters]`
           : result.data?.content;
 
       return {
@@ -254,7 +258,8 @@ class MCPServer {
       console.error("[MCP Server Error]", error);
     };
 
-    process.on("SIGINT", async () => {
+    // Use process.once to prevent memory leaks from multiple registrations
+    process.once("SIGINT", async () => {
       await this.close();
       process.exit(0);
     });

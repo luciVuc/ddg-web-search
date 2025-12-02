@@ -3,6 +3,9 @@
 import { FetchResult, SearchResult, WebContentFetcher, WebSearcher } from ".";
 import * as readline from "readline";
 
+// Constants
+const CONTENT_PREVIEW_LENGTH = 500;
+
 // ANSI color codes for better terminal output
 const colors = {
   reset: "\x1b[0m",
@@ -136,11 +139,18 @@ export class CLI {
       );
 
       if (result.data?.content) {
-        this.log("\n📝 Content Preview (first 500 characters):", "bright");
-        this.log("─".repeat(50), "white");
-        const preview = result.data?.content.substring(0, 500);
         this.log(
-          preview + (result.data?.content.length > 500 ? "..." : ""),
+          `\n📝 Content Preview (first ${CONTENT_PREVIEW_LENGTH} characters):`,
+          "bright",
+        );
+        this.log("─".repeat(50), "white");
+        const preview = result.data?.content.substring(
+          0,
+          CONTENT_PREVIEW_LENGTH,
+        );
+        this.log(
+          preview +
+            (result.data?.content.length > CONTENT_PREVIEW_LENGTH ? "..." : ""),
           "white",
         );
         this.log("─".repeat(50), "white");

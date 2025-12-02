@@ -146,9 +146,10 @@ describe("WebSearcher", () => {
       expect(mockPage.$).toHaveBeenCalledWith(
         '.captcha, [id*="captcha"], [class*="captcha"]',
       );
-      expect(mockPage.waitForFunction).toHaveBeenCalledWith(
-        expect.any(Function),
-        { timeout: 10000 },
+      // Updated expectation for the new captcha wait logic
+      expect(mockPage.waitForSelector).toHaveBeenCalledWith(
+        '.captcha, [id*="captcha"], [class*="captcha"]',
+        { hidden: true, timeout: 60000 },
       );
 
       await nonHeadlessSearcher.close();

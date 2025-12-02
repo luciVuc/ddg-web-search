@@ -2,6 +2,13 @@ import puppeteer, { Browser, Page } from "puppeteer";
 import { RateLimiter } from "../utils";
 import { SearchResult } from "../types";
 
+// Constants
+const RATE_LIMIT_REQUESTS = 1;
+const RATE_LIMIT_INTERVAL_MS = 2000;
+const NAVIGATION_TIMEOUT_MS = 30000;
+const SELECTOR_WAIT_TIMEOUT_MS = 5000;
+const CAPTCHA_MANUAL_SOLVE_TIMEOUT_MS = 60000;
+
 /**
  * Web Search interface using Puppeteer for browser automation
  * Includes built-in rate limiting and captcha handling capabilities
@@ -11,28 +18,51 @@ export class WebSearcher {
   private baseUrl: string;
   private browser: Browser | null = null;
   private headless: boolean;
+  private browserInitPromise: Promise<void> | null = null;
 
   constructor(headless: boolean = true) {
-    this.rateLimiter = new RateLimiter(1, 2000); // 1 request per 2 seconds to be more conservative
+    this.rateLimiter = new RateLimiter(
+      RATE_LIMIT_REQUESTS,
+      RATE_LIMIT_INTERVAL_MS,
+    );
     this.baseUrl = "https://html.duckduckgo.com";
     this.headless = headless;
   }
 
   /**
    * Initialize browser instance if not already created
+   * Uses a promise-based mutex to prevent race conditions
    */
   private async initBrowser(): Promise<void> {
-    if (!this.browser) {
-      this.browser = await puppeteer.launch({
-        headless: this.headless,
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-blink-features=AutomationControlled",
-          "--disable-features=VizDisplayCompositor",
-        ],
-      });
+    // If browser is already initialized, return
+    if (this.browser) {
+      return;
     }
+
+    // If initialization is in progress, wait for it
+    if (this.browserInitPromise) {
+      await this.browserInitPromise;
+      return;
+    }
+
+    // Start initialization
+    this.browserInitPromise = (async () => {
+      try {
+        this.browser = await puppeteer.launch({
+          headless: this.headless,
+          args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-blink-features=AutomationControlled",
+            "--disable-features=VizDisplayCompositor",
+          ],
+        });
+      } finally {
+        this.browserInitPromise = null;
+      }
+    })();
+
+    await this.browserInitPromise;
   }
 
   /**
@@ -83,7 +113,7 @@ export class WebSearcher {
       // Navigate to DuckDuckGo and perform search
       await page.goto("https://duckduckgo.com", {
         waitUntil: "networkidle0",
-        timeout: 30000,
+        timeout: NAVIGATION_TIMEOUT_MS,
       });
 
       // Check if there's a captcha challenge on the main page
@@ -96,14 +126,27 @@ export class WebSearcher {
         if (this.headless) {
           return [];
         }
-        // Wait a bit for manual solving if not headless
-        await page.waitForFunction(() => true, { timeout: 10000 });
+        // Wait for captcha to be solved manually (not headless mode)
+        console.warn(
+          `Waiting up to ${CAPTCHA_MANUAL_SOLVE_TIMEOUT_MS / 1000}s for manual captcha solving...`,
+        );
+        try {
+          await page.waitForSelector(
+            '.captcha, [id*="captcha"], [class*="captcha"]',
+            { hidden: true, timeout: CAPTCHA_MANUAL_SOLVE_TIMEOUT_MS },
+          );
+          console.log("Captcha solved, continuing...");
+        } catch (error) {
+          console.warn("Captcha wait timeout - proceeding anyway");
+        }
       }
 
       // Find and fill the search box
       const searchBoxSelector =
         'input[name="q"], #search_form_input, .search__input';
-      await page.waitForSelector(searchBoxSelector, { timeout: 5000 });
+      await page.waitForSelector(searchBoxSelector, {
+        timeout: SELECTOR_WAIT_TIMEOUT_MS,
+      });
       await page.type(searchBoxSelector, query);
 
       // Submit the search
@@ -114,7 +157,7 @@ export class WebSearcher {
       // Wait for search results page to load
       await page.waitForNavigation({
         waitUntil: "networkidle0",
-        timeout: 30000,
+        timeout: NAVIGATION_TIMEOUT_MS,
       });
 
       // Wait for search results to load - try multiple selectors
@@ -131,11 +174,15 @@ export class WebSearcher {
       let resultsFound = false;
       for (const selector of possibleSelectors) {
         try {
-          await page.waitForSelector(selector, { timeout: 5000 });
+          await page.waitForSelector(selector, {
+            timeout: SELECTOR_WAIT_TIMEOUT_MS,
+          });
+          console.log(`Successfully found results using selector: ${selector}`);
           resultsFound = true;
           break;
         } catch (error) {
-          // Try next selector
+          // Log each failed attempt for debugging
+          console.debug(`Selector '${selector}' not found, trying next...`);
           continue;
         }
       }

@@ -12,6 +12,7 @@ import {
 import { createServer, IncomingMessage, ServerResponse } from "node:http";
 import { URL } from "node:url";
 import { WebSearcher, FetchResult, SearchResult, WebContentFetcher } from ".";
+import packageJson from "../package.json";
 
 // Constants
 const MAX_CONTENT_LENGTH = 10000;
@@ -63,7 +64,7 @@ class MCPServer {
 
     this.server = new Server({
       name: "ddg-web-search",
-      version: "1.0.4",
+      version: packageJson.version,
     });
 
     this.setupToolHandlers();
@@ -322,7 +323,7 @@ class MCPServer {
           res.end(
             JSON.stringify({
               name: "DDG Web Search MCP Server",
-              version: "1.0.4",
+              version: packageJson.version,
               transport: "http",
               endpoints: {
                 sse: "/sse",

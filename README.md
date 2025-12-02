@@ -54,7 +54,7 @@ The package includes a Model Context Protocol (MCP) server that exposes the sear
 
 2. **fetch_web_content**: Fetch and parse content from a web URL with intelligent scraping
    - Input: `{ "url": "https://example.com" }`
-   - Returns: Parsed text content with metadata (truncated to 10,000 characters if needed)
+   - Returns: Parsed text content with metadata (content truncated to 10,000 characters if needed)
    - Features: HTML-to-Markdown conversion, metadata extraction, content cleaning
 
 ### Running the MCP Server
@@ -300,7 +300,7 @@ new WebSearcher(headless?: boolean);
 
 #### Methods
 
-- `search(query: string): Promise<SearchResult[]>`: Searches DuckDuckGo using browser automation and returns an array of search results
+- `search(query: string): Promise<SearchResult[]>`: Searches DuckDuckGo using browser automation and returns an array of search results. Thread-safe with built-in initialization mutex to prevent race conditions.
 - `close(): Promise<void>`: Closes the browser instance and frees resources (important for memory management)
 
 ### WebContentFetcher
@@ -386,6 +386,30 @@ interface WebContent {
 
 ## Development
 
+### Configuration Constants
+
+The package uses the following configurable constants:
+
+**WebSearcher**:
+
+- `RATE_LIMIT_INTERVAL_MS`: 2000ms (1 request per 2 seconds)
+- `NAVIGATION_TIMEOUT_MS`: 30000ms (30 seconds for page navigation)
+- `SELECTOR_WAIT_TIMEOUT_MS`: 5000ms (5 seconds for selector waiting)
+- `CAPTCHA_MANUAL_SOLVE_TIMEOUT_MS`: 60000ms (60 seconds for manual captcha solving)
+
+**HttpClient**:
+
+- `DEFAULT_TIMEOUT_MS`: 10000ms (10 seconds for HTTP requests)
+
+**MCP Server**:
+
+- `MAX_CONTENT_LENGTH`: 10000 characters (content truncation limit)
+- `DEFAULT_HTTP_PORT`: 3001 (HTTP transport default port)
+
+**CLI**:
+
+- `CONTENT_PREVIEW_LENGTH`: 500 characters (preview display limit)
+
 ### Building the Project
 
 ```bash
@@ -430,8 +454,8 @@ npm run mcp:http:build
 
 Both the WebSearcher and WebContentFetcher include built-in rate limiting to prevent overwhelming servers:
 
-- **WebSearcher**: 1 request per 2 seconds by default (conservative timing for browser automation)
-- **WebContentFetcher**: Configurable rate limiting (1 request per second by default)
+- **WebSearcher**: 1 request per 2 seconds (2000ms) by default - conservative timing for browser automation
+- **WebContentFetcher**: Configurable rate limiting (1 request per 1000ms by default)
 
 ## Error Handling
 
@@ -443,7 +467,9 @@ The package includes comprehensive error handling:
 - HTTP errors are properly typed and handled
 - MCP server errors are returned as structured error responses
 - Browser automation errors (timeouts, captcha detection, connection issues) are handled gracefully
+- Captcha detection: Returns empty results in headless mode; waits up to 60 seconds for manual solving in non-headless mode
 - Resource cleanup ensures no memory leaks from browser instances
+- Thread-safe browser initialization prevents race conditions
 
 **Important Note**: Always call `searcher.close()` when done with WebSearcher to properly cleanup browser resources and prevent memory leaks.
 

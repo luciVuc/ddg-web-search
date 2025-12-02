@@ -85,7 +85,7 @@ npm run build
 node dist/mcp.js
 
 # Or using the global binary
-ddg-web-search
+ddg-web-search-mcp
 ```
 
 ## Integration with AI Assistants

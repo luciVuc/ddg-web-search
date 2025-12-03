@@ -1,0 +1,81 @@
+version: "3.8"
+
+services:
+  # MCP Server with stdio transport (default)
+  ddg-mcp-stdio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ddg-web-search-mcp-stdio
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+    stdin_open: true
+    tty: true
+    # No ports exposed for stdio transport
+    networks:
+      - ddg-network
+    profiles:
+      - stdio
+
+  # MCP Server with HTTP transport
+  ddg-mcp-http:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ddg-web-search-mcp-http
+    restart: unless-stopped
+    command:
+      [
+        "node",
+        "dist/mcp.js",
+        "--transport",
+        "http",
+        "--port",
+        "3001",
+        "--host",
+        "0.0.0.0",
+      ]
+    environment:
+      - NODE_ENV=production
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+    ports:
+      - "3001:3001"
+    networks:
+      - ddg-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3001/', (r) => {if (r.statusCode !== 200) throw new Error('Health check failed')})",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    profiles:
+      - http
+
+  # CLI service (for interactive usage)
+  ddg-cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ddg-web-search-cli
+    command: ["node", "dist/cli.js", "interactive"]
+    environment:
+      - NODE_ENV=production
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+    stdin_open: true
+    tty: true
+    networks:
+      - ddg-network
+    profiles:
+      - cli
+
+networks:
+  ddg-network:
+    driver: bridge

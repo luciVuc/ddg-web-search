@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  # Development service with hot-reload
+  ddg-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: ddg-web-search-dev
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+    volumes:
+      - ./src:/app/src:ro
+      - ./tests:/app/tests:ro
+      - ./package.json:/app/package.json:ro
+      - ./tsconfig.json:/app/tsconfig.json:ro
+      - ./jest.config.js:/app/jest.config.js:ro
+      - /app/node_modules
+    ports:
+      - "3001:3001"
+      - "9229:9229" # Node.js debugger
+    stdin_open: true
+    tty: true
+    networks:
+      - ddg-network
+    command: ["npm", "run", "dev"]
+
+  # Test runner service
+  ddg-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: ddg-web-search-test
+    environment:
+      - NODE_ENV=test
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+    volumes:
+      - ./src:/app/src:ro
+      - ./tests:/app/tests:ro
+      - ./package.json:/app/package.json:ro
+      - ./tsconfig.json:/app/tsconfig.json:ro
+      - ./jest.config.js:/app/jest.config.js:ro
+      - ./coverage:/app/coverage
+      - /app/node_modules
+    networks:
+      - ddg-network
+    command: ["npm", "test"]
+    profiles:
+      - test
+
+networks:
+  ddg-network:
+    driver: bridge

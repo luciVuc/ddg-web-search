@@ -15,6 +15,8 @@ A comprehensive package for searching the web and fetching web content programma
 
 ## Installation
 
+### NPM Installation
+
 To install the package globally for CLI and MCP usage:
 
 ```bash
@@ -32,6 +34,38 @@ For MCP server dependencies (automatically included):
 ```bash
 npm install @modelcontextprotocol/sdk puppeteer
 ```
+
+### Docker Installation
+
+Run with Docker for easy deployment and consistent environment:
+
+```bash
+# Pull from Docker Hub
+docker pull realLV/ddg-web-search:latest
+
+# Run HTTP server
+docker run -p 3001:3001 realLV/ddg-web-search:latest \
+  node dist/mcp.js --transport http --port 3001 --host 0.0.0.0
+
+# Run CLI interactively
+docker run -it realLV/ddg-web-search:latest node dist/cli.js interactive
+```
+
+Or build locally:
+
+```bash
+# Build from source
+docker build -t ddg-web-search .
+
+# Run HTTP server
+docker run -p 3001:3001 ddg-web-search \
+  node dist/mcp.js --transport http --port 3001 --host 0.0.0.0
+
+# Run CLI interactively
+docker run -it ddg-web-search node dist/cli.js interactive
+```
+
+See [DOCKER-HUB.md](./DOCKER-HUB.md) for publishing details and [DOCKER.md](./DOCKER.md) for comprehensive Docker usage guide.
 
 ## Key Dependencies
 
@@ -383,6 +417,36 @@ interface WebContent {
   };
 }
 ```
+
+## Docker Support
+
+This project includes comprehensive Docker support for both development and production environments.
+
+### Quick Start with Docker
+
+```bash
+# Using Docker Compose - HTTP transport
+docker-compose --profile http up
+
+# Using Docker Compose - Development mode
+docker-compose -f docker-compose.dev.yml up
+
+# Using Docker directly
+docker build -t ddg-web-search .
+docker run -p 3001:3001 ddg-web-search \
+  node dist/mcp.js --transport http --port 3001 --host 0.0.0.0
+```
+
+### Docker Features
+
+- 🐳 **Multi-stage builds** for optimized image size
+- 🔒 **Non-root user** for enhanced security
+- 🚀 **Multiple profiles** (stdio, http, cli)
+- 🔄 **Hot-reload** support in development mode
+- 🏥 **Health checks** for monitoring
+- 📦 **Pre-configured Chromium** for Puppeteer
+
+For detailed Docker documentation, including advanced usage, troubleshooting, and best practices, see [DOCKER.md](./DOCKER.md).
 
 ## Development
 

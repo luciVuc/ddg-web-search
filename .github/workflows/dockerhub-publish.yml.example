@@ -1,0 +1,92 @@
+# GitHub Actions Workflow Addition for Docker Hub Publishing
+#
+# To enable automatic Docker Hub publishing, add this to .github/workflows/docker.yml
+# You'll need to add these secrets to your GitHub repository:
+#   - DOCKERHUB_USERNAME: Your Docker Hub username (e.g., realLV)
+#   - DOCKERHUB_TOKEN: Your Docker Hub access token
+#
+# How to get a Docker Hub token:
+# 1. Go to https://hub.docker.com/settings/security
+# 2. Click "New Access Token"
+# 3. Give it a description (e.g., "GitHub Actions")
+# 4. Copy the token and add it to GitHub secrets
+
+# Add this job to your .github/workflows/docker.yml:
+
+  push-to-dockerhub:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata for Docker Hub
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: realLV/ddg-web-search
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push to Docker Hub
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Update Docker Hub description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: realLV/ddg-web-search
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+
+# Alternative: Simplified version without multi-arch
+
+  push-to-dockerhub-simple:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            realLV/ddg-web-search:latest
+            realLV/ddg-web-search:${{ github.sha }}

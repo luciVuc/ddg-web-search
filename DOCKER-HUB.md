@@ -84,24 +84,24 @@ echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 ```bash
 # Build production image
-docker build -t realLV/ddg-web-search:1.0.4 .
+docker build -t realLV/ddg-web-search:1.0.5 .
 
 # Also tag as latest
-docker tag realLV/ddg-web-search:1.0.4 realLV/ddg-web-search:latest
+docker tag realLV/ddg-web-search:1.0.5 realLV/ddg-web-search:latest
 ```
 
 ### 3. Test the Image
 
 ```bash
 # Test CLI
-docker run --rm realLV/ddg-web-search:1.0.4 node dist/cli.js help
+docker run --rm realLV/ddg-web-search:1.0.5 node dist/cli.js help
 
 # Test version
-docker run --rm realLV/ddg-web-search:1.0.4 node dist/cli.js version
+docker run --rm realLV/ddg-web-search:1.0.5 node dist/cli.js version
 
 # Test HTTP server (in another terminal)
 docker run -d -p 3001:3001 --name test-ddg \
-  realLV/ddg-web-search:1.0.4 \
+  realLV/ddg-web-search:1.0.5 \
   node dist/mcp.js --transport http --port 3001 --host 0.0.0.0
 
 curl http://localhost:3001/
@@ -112,7 +112,7 @@ docker stop test-ddg && docker rm test-ddg
 
 ```bash
 # Push versioned tag
-docker push realLV/ddg-web-search:1.0.4
+docker push realLV/ddg-web-search:1.0.5
 
 # Push latest tag
 docker push realLV/ddg-web-search:latest
@@ -142,7 +142,7 @@ make docker-publish-multiarch
 # Or manually
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
-  -t realLV/ddg-web-search:1.0.4 \
+  -t realLV/ddg-web-search:1.0.5 \
   -t realLV/ddg-web-search:latest \
   --push .
 ```
@@ -159,10 +159,10 @@ Follow semantic versioning (MAJOR.MINOR.PATCH):
 
 ### Tag Strategy
 
-For version `1.0.4`, create these tags:
+For version `1.0.5`, create these tags:
 
 ```bash
-realLV/ddg-web-search:1.0.4    # Exact version
+realLV/ddg-web-search:1.0.5    # Exact version
 realLV/ddg-web-search:1.0      # Minor version
 realLV/ddg-web-search:1        # Major version
 realLV/ddg-web-search:latest   # Latest stable
@@ -171,11 +171,11 @@ realLV/ddg-web-search:latest   # Latest stable
 Example:
 
 ```bash
-docker tag realLV/ddg-web-search:1.0.4 realLV/ddg-web-search:1.0
-docker tag realLV/ddg-web-search:1.0.4 realLV/ddg-web-search:1
-docker tag realLV/ddg-web-search:1.0.4 realLV/ddg-web-search:latest
+docker tag realLV/ddg-web-search:1.0.5 realLV/ddg-web-search:1.0
+docker tag realLV/ddg-web-search:1.0.5 realLV/ddg-web-search:1
+docker tag realLV/ddg-web-search:1.0.5 realLV/ddg-web-search:latest
 
-docker push realLV/ddg-web-search:1.0.4
+docker push realLV/ddg-web-search:1.0.5
 docker push realLV/ddg-web-search:1.0
 docker push realLV/ddg-web-search:1
 docker push realLV/ddg-web-search:latest
@@ -224,8 +224,8 @@ Before publishing to Docker Hub:
 - [ ] Push to Docker Hub
 - [ ] Verify on Docker Hub
 - [ ] Update README.md with new version
-- [ ] Create Git tag: `git tag v1.0.4`
-- [ ] Push tag: `git push origin v1.0.4`
+- [ ] Create Git tag: `git tag v1.0.5`
+- [ ] Push tag: `git push origin v1.0.5`
 
 ## Usage After Publishing
 
@@ -236,7 +236,7 @@ Once published, users can pull and run:
 docker pull realLV/ddg-web-search:latest
 
 # Pull specific version
-docker pull realLV/ddg-web-search:1.0.4
+docker pull realLV/ddg-web-search:1.0.5
 
 # Run HTTP server
 docker run -p 3001:3001 realLV/ddg-web-search:latest \
@@ -270,7 +270,7 @@ docker run -it realLV/ddg-web-search:latest node dist/cli.js interactive
 ### Available Tags
 
 - `latest` - Latest stable release
-- `1.0.4` - Specific version
+- `1.0.5` - Specific version
 - `1.0` - Latest 1.0.x release
 - `1` - Latest 1.x release
 
@@ -346,10 +346,10 @@ docker login -u realLV --password-stdin < token.txt
 
 ```bash
 # Using Docker scan
-docker scan realLV/ddg-web-search:1.0.4
+docker scan realLV/ddg-web-search:1.0.5
 
 # Using Trivy
-trivy image realLV/ddg-web-search:1.0.4
+trivy image realLV/ddg-web-search:1.0.5
 ```
 
 ### 3. Sign Images (Optional)
@@ -358,7 +358,7 @@ Use Docker Content Trust:
 
 ```bash
 export DOCKER_CONTENT_TRUST=1
-docker push realLV/ddg-web-search:1.0.4
+docker push realLV/ddg-web-search:1.0.5
 ```
 
 ### 4. Keep Credentials Safe

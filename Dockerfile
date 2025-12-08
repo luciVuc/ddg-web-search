@@ -7,14 +7,16 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-COPY tsconfig.json ./
 
-# Install dependencies
-RUN npm ci --only=production && \
-  npm cache clean --force
+# Copy tsconfig
+COPY tsconfig.json .
 
-# Copy source files
+# Copy source files first (needed for npm prepublish script)
 COPY src ./src
+
+# Install all dependencies (including dev) for build
+RUN npm ci && \
+  npm cache clean --force
 
 # Build the TypeScript project
 RUN npm run build
@@ -49,7 +51,7 @@ RUN addgroup -g 1001 -S nodejs && \
 COPY package*.json ./
 
 # Install production dependencies only
-RUN npm ci --only=production && \
+RUN npm ci --only=production --ignore-scripts && \
   npm cache clean --force
 
 # Copy built files from builder stage

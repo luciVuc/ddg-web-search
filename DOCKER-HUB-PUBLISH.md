@@ -98,14 +98,14 @@ make docker-push         # Push to Docker Hub
 docker login
 
 # 2. Build and tag
-docker build -t realLV/ddg-web-search:1.0.5 .
-docker tag realLV/ddg-web-search:1.0.5 realLV/ddg-web-search:latest
+docker build -t realLV/ddg-web-search:1.0.6 .
+docker tag realLV/ddg-web-search:1.0.6 realLV/ddg-web-search:latest
 
 # 3. Test
-docker run --rm realLV/ddg-web-search:1.0.5 node dist/cli.js version
+docker run --rm realLV/ddg-web-search:1.0.6 node dist/cli.js version
 
 # 4. Push
-docker push realLV/ddg-web-search:1.0.5
+docker push realLV/ddg-web-search:1.0.6
 docker push realLV/ddg-web-search:latest
 ```
 
@@ -114,7 +114,7 @@ docker push realLV/ddg-web-search:latest
 After publishing, images will be available with these tags:
 
 - `latest` - Latest stable release
-- `1.0.5` - Specific version (from package.json)
+- `1.0.6` - Specific version (from package.json)
 - `1.0` - Latest 1.0.x (optional)
 - `1` - Latest 1.x (optional)
 
@@ -134,7 +134,7 @@ docker run -p 3001:3001 realLV/ddg-web-search:latest \
 docker run -it realLV/ddg-web-search:latest node dist/cli.js interactive
 
 # Run specific version
-docker pull realLV/ddg-web-search:1.0.5
+docker pull realLV/ddg-web-search:1.0.6
 ```
 
 ## 🎯 Quick Start Guide
@@ -165,7 +165,7 @@ docker pull realLV/ddg-web-search:1.0.5
 
    ```bash
    # Edit package.json and update version
-   # Example: "version": "1.0.5"
+   # Example: "version": "1.0.6"
    ```
 
 2. **Build and Test Locally**
@@ -273,7 +273,7 @@ make docker-publish-multiarch
 
 # Or manually
 docker buildx build --platform linux/amd64,linux/arm64 \
-  -t realLV/ddg-web-search:1.0.5 \
+  -t realLV/ddg-web-search:1.0.6 \
   -t realLV/ddg-web-search:latest \
   --push .
 ```

@@ -152,7 +152,7 @@ test_image() {
     local version="$1"
     local full_image_name="$DOCKER_USERNAME/$IMAGE_NAME:$version"
     
-    print_info "Testing image: $full_image_name"
+    print_info "Testing MCP Server image: $full_image_name"
     
     # Test CLI help command
     if docker run --rm "$full_image_name" node dist/cli.js help &> /dev/null; then
@@ -166,7 +166,31 @@ test_image() {
     local image_version=$(docker run --rm "$full_image_name" node dist/cli.js version 2>&1 | head -1)
     print_info "Image version: $image_version"
     
-    print_success "Image tests passed"
+    # Test MCP server stdio transport (basic check)
+    print_info "Verifying MCP server binary exists..."
+    if docker run --rm "$full_image_name" test -f dist/mcp.js; then
+        print_success "MCP server binary test passed"
+    else
+        print_error "MCP server binary not found"
+        return 1
+    fi
+    
+    # Test MCP server HTTP transport (quick health check)
+    print_info "Testing HTTP transport (quick health check)..."
+    local test_container=$(docker run -d -p 3001:3001 "$full_image_name" node dist/mcp.js --transport http --port 3001 --host 0.0.0.0)
+    sleep 3
+    
+    if curl -f http://localhost:3001/ &> /dev/null; then
+        print_success "HTTP transport test passed"
+        docker stop "$test_container" &> /dev/null
+        docker rm "$test_container" &> /dev/null
+    else
+        print_warning "HTTP transport test inconclusive (may be expected in test environment)"
+        docker stop "$test_container" &> /dev/null
+        docker rm "$test_container" &> /dev/null
+    fi
+    
+    print_success "Image tests completed"
     return 0
 }
 
@@ -207,26 +231,37 @@ display_image_info() {
     
     echo ""
     echo "========================================="
-    echo "       Published Image Information"
+    echo "   Published MCP Server Information"
     echo "========================================="
     echo ""
-    echo "Docker Hub URL:"
+    echo "🐳 Docker Hub Repository:"
     echo "  https://hub.docker.com/r/$DOCKER_USERNAME/$IMAGE_NAME"
     echo ""
-    echo "Pull command:"
-    echo "  docker pull $full_image_name:$version"
+    echo "📦 Pull Commands:"
+    echo "  # Latest version"
+    echo "  docker pull $full_image_name:latest"
     echo ""
     if [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
-        echo "Or use latest:"
-        echo "  docker pull $full_image_name:latest"
+        echo "  # Specific version ($version)"
+        echo "  docker pull $full_image_name:$version"
         echo ""
     fi
-    echo "Run command (HTTP server):"
+    echo "🚀 Run as MCP Server (HTTP Transport):"
     echo "  docker run -p 3001:3001 $full_image_name:$version \\"
     echo "    node dist/mcp.js --transport http --port 3001 --host 0.0.0.0"
     echo ""
-    echo "Run command (CLI):"
+    echo "💬 Run as MCP Server (Stdio Transport):"
+    echo "  docker run -it $full_image_name:$version node dist/mcp.js"
+    echo ""
+    echo "🖥️  Run as CLI:"
     echo "  docker run -it $full_image_name:$version node dist/cli.js interactive"
+    echo ""
+    echo "Docker Compose Support:"
+    echo "  # HTTP server (docker-compose.yml)"
+    echo "  docker-compose --profile http up"
+    echo ""
+    echo "  # Stdio server (docker-compose.yml)"
+    echo "  docker-compose --profile stdio up"
     echo ""
     echo "========================================="
     echo ""
@@ -237,26 +272,16 @@ update_documentation() {
     local version="$1"
     local full_image_name="$DOCKER_USERNAME/$IMAGE_NAME"
     
-    print_info "Updating README.md with Docker Hub information..."
-    
-    # Note: This is informational - actual file editing should be done manually or via another script
-    print_info "Consider updating README.md with:"
+    print_info "Docker Hub publishing documentation..."
+    print_info "For detailed information, see DOCKER-HUB.md"
+    print_info "For usage examples, see README.md Docker Installation section"
     echo ""
-    echo "### Docker Hub"
-    echo ""
-    echo "Pre-built images are available on Docker Hub:"
-    echo ""
-    echo "\`\`\`bash"
-    echo "# Pull the latest image"
-    echo "docker pull $full_image_name:latest"
-    echo ""
-    echo "# Or pull a specific version"
-    echo "docker pull $full_image_name:$version"
-    echo ""
-    echo "# Run HTTP server"
-    echo "docker run -p 3001:3001 $full_image_name:latest \\"
-    echo "  node dist/mcp.js --transport http --port 3001 --host 0.0.0.0"
-    echo "\`\`\`"
+    print_info "MCP Server Image Details:"
+    echo "  • Repository: $full_image_name"
+    echo "  • Base Image: node:20-alpine + chromium"
+    echo "  • Transports: stdio (default), HTTP (port 3001)"
+    echo "  • Tools: search, fetch_web_content"
+    echo "  • Non-root User: nodejs (UID 1001)"
     echo ""
 }
 

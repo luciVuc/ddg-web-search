@@ -1,6 +1,6 @@
 {
   "name": "@lucid-spark/ddg-web-search",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A comprehensive package for searching the web and fetching web content programmatically, through a CLI interface, or through a Model Context Protocol (MCP) server.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -51,6 +51,7 @@
   },
   "keywords": [
     "duckduckgo",
+    "ddg",
     "search",
     "web",
     "fetcher",
@@ -62,6 +63,8 @@
     "http-client",
     "mcp",
     "model-context-protocol",
+    "modelcontextprotocol",
+    "mcp-cli",
     "mcp-server"
   ],
   "author": "DDG Web Search Contributors",

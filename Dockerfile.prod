@@ -1,5 +1,6 @@
-# Multi-stage Dockerfile for DDG Web Search MCP Server
-# Production-ready Docker image for Model Context Protocol (MCP) server deployment
+# Production Dockerfile for DDG Web Search MCP Server
+# Optimized for Docker Hub deployment with multi-architecture support (amd64, arm64)
+# This file is used for production releases on Docker Hub
 
 ARG NODE_VERSION=20
 ARG REGISTRY=docker.io
@@ -7,7 +8,6 @@ ARG REGISTRY=docker.io
 # Stage 1: Build stage
 FROM ${REGISTRY}/library/node:${NODE_VERSION}-alpine AS builder
 
-# Set working directory
 WORKDIR /app
 
 # Copy package files
@@ -16,7 +16,7 @@ COPY package*.json ./
 # Copy tsconfig
 COPY tsconfig.json .
 
-# Copy source files first (needed for npm prepublish script)
+# Copy source files
 COPY src ./src
 
 # Install all dependencies (including dev) for build
@@ -29,7 +29,7 @@ RUN npm run build
 # Stage 2: Production stage
 FROM ${REGISTRY}/library/node:${NODE_VERSION}-alpine
 
-# Install Chromium and dependencies for Puppeteer
+# Install Chromium and dependencies for Puppeteer (optimized for production)
 RUN apk add --no-cache \
   chromium \
   nss \
@@ -37,15 +37,14 @@ RUN apk add --no-cache \
   harfbuzz \
   ca-certificates \
   ttf-freefont \
-  nodejs \
-  npm
+  dumb-init
 
-# Set environment variables for Puppeteer
+# Set environment variables
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
   PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser \
-  NODE_ENV=production
+  NODE_ENV=production \
+  NODE_OPTIONS="--max-old-space-size=256"
 
-# Create app directory and non-root user
 WORKDIR /app
 
 # Create non-root user for security
@@ -68,32 +67,33 @@ COPY README.md LICENSE ./
 # Change ownership to non-root user
 RUN chown -R nodejs:nodejs /app
 
-# Add Docker Hub Labels for MCP Server
-LABEL maintainer="DDG Web Search Contributors"
+# Docker Hub OCI Labels (OCI Image Spec)
 LABEL org.opencontainers.image.title="DDG Web Search MCP Server"
-LABEL org.opencontainers.image.description="A Model Context Protocol (MCP) server for searching the web and fetching web content using DuckDuckGo"
-LABEL org.opencontainers.image.vendor="DDG Web Search"
+LABEL org.opencontainers.image.description="A Model Context Protocol (MCP) server for searching the web and fetching web content using DuckDuckGo with browser automation"
+LABEL org.opencontainers.image.vendor="DDG Web Search Contributors"
 LABEL org.opencontainers.image.url="https://github.com/lucivuc/ddg-web-search"
 LABEL org.opencontainers.image.source="https://github.com/lucivuc/ddg-web-search"
 LABEL org.opencontainers.image.documentation="https://github.com/lucivuc/ddg-web-search/blob/main/DOCKER-HUB.md"
 LABEL org.opencontainers.image.licenses="MIT"
+
+# MCP Server Labels
 LABEL org.mcp.version="1.0"
-LABEL org.mcp.transport.stdio="true"
-LABEL org.mcp.transport.http="true"
+LABEL org.mcp.transports="stdio,http"
 LABEL org.mcp.tools="search,fetch_web_content"
+LABEL org.mcp.description="Search the web and fetch web content using DuckDuckGo"
 
 # Switch to non-root user
 USER nodejs
 
-# Expose port for HTTP transport (default 3001)
+# Expose port for HTTP transport
 EXPOSE 3001
 
+# Use dumb-init to properly handle signals
+ENTRYPOINT ["dumb-init", "--"]
+
 # Health check for HTTP transport
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3001/', (r) => {if (r.statusCode !== 200) throw new Error('Health check failed')})"
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3001/', (r) => {if (r.statusCode !== 200) throw new Error('Health check failed')})" || exit 1
 
 # Default command: Run MCP server with stdio transport
 CMD ["node", "dist/mcp.js"]
-
-# Optional: Override with HTTP transport
-# CMD ["node", "dist/mcp.js", "--transport", "http", "--port", "3001", "--host", "0.0.0.0"]

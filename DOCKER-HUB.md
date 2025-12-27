@@ -1,6 +1,15 @@
-# Publishing to Docker Hub
+# Publishing DDG Web Search MCP Server to Docker Hub
 
-This guide explains how to publish the DDG Web Search Docker images to Docker Hub.
+This guide explains how to publish the DDG Web Search **Model Context Protocol (MCP) Server** Docker images to Docker Hub.
+
+## Overview
+
+DDG Web Search is a comprehensive MCP server that provides:
+
+- **Web Search Tool**: Search the web using DuckDuckGo with browser automation
+- **Web Content Fetcher Tool**: Fetch and parse content from web pages
+- **Multiple Transports**: Both stdio (default) and HTTP (SSE) support
+- **Docker-Ready**: Pre-configured for easy Docker Hub deployment
 
 ## Prerequisites
 
@@ -28,7 +37,7 @@ You need write access to the Docker Hub repository. For this project:
 
 ### Option 1: Interactive Script (Recommended)
 
-The easiest way to publish:
+The easiest way to publish an MCP server image:
 
 ```bash
 ./docker-publish.sh
@@ -36,13 +45,13 @@ The easiest way to publish:
 
 This script will:
 
-1. Check Docker installation and login status
-2. Prompt for Docker Hub credentials if needed
-3. Let you choose the version to publish
-4. Build the image
-5. Run tests (optional)
-6. Push to Docker Hub
-7. Display usage information
+1. ✅ Check Docker installation and login status
+2. 🔐 Prompt for Docker Hub credentials if needed
+3. 📦 Let you choose the version to publish
+4. 🏗️ Build the MCP server image
+5. ✓ Run tests (MCP server and CLI verification)
+6. 🚀 Push to Docker Hub
+7. 📋 Display usage information for MCP deployments
 
 ### Option 2: Using npm
 
@@ -80,31 +89,47 @@ export DOCKER_PASSWORD=your-password
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 ```
 
-### 2. Build the Image
+### 2. Build the MCP Server Image
 
 ```bash
 # Build production image
-docker build -t realLV/ddg-web-search:1.0.5 .
+docker build -t realLV/ddg-web-search:1.0.6 .
 
 # Also tag as latest
-docker tag realLV/ddg-web-search:1.0.5 realLV/ddg-web-search:latest
+docker tag realLV/ddg-web-search:1.0.6 realLV/ddg-web-search:latest
 ```
 
-### 3. Test the Image
+### 3. Test the MCP Server Image
+
+#### Test CLI
 
 ```bash
-# Test CLI
-docker run --rm realLV/ddg-web-search:1.0.5 node dist/cli.js help
+docker run --rm realLV/ddg-web-search:1.0.6 node dist/cli.js help
+docker run --rm realLV/ddg-web-search:1.0.6 node dist/cli.js version
+```
 
-# Test version
-docker run --rm realLV/ddg-web-search:1.0.5 node dist/cli.js version
+#### Test MCP Server (Stdio Transport)
 
-# Test HTTP server (in another terminal)
+```bash
+# Test that MCP server binary exists
+docker run --rm realLV/ddg-web-search:1.0.6 test -f dist/mcp.js && echo "✓ MCP server binary present"
+```
+
+#### Test MCP Server (HTTP Transport)
+
+```bash
+# Start HTTP transport server
 docker run -d -p 3001:3001 --name test-ddg \
-  realLV/ddg-web-search:1.0.5 \
+  realLV/ddg-web-search:1.0.6 \
   node dist/mcp.js --transport http --port 3001 --host 0.0.0.0
 
+# Wait for startup
+sleep 3
+
+# Health check
 curl http://localhost:3001/
+
+# Cleanup
 docker stop test-ddg && docker rm test-ddg
 ```
 
@@ -112,7 +137,7 @@ docker stop test-ddg && docker rm test-ddg
 
 ```bash
 # Push versioned tag
-docker push realLV/ddg-web-search:1.0.5
+docker push realLV/ddg-web-search:1.0.6
 
 # Push latest tag
 docker push realLV/ddg-web-search:latest
@@ -122,9 +147,57 @@ docker push realLV/ddg-web-search:latest
 
 Visit: https://hub.docker.com/r/realLV/ddg-web-search
 
+## Docker Image Specifications
+
+### Base Configuration
+
+- **Base Image**: `node:20-alpine`
+- **Additional Tools**: Chromium, Puppeteer (for browser automation)
+- **Size**: ~400-500MB (optimized with multi-stage build)
+- **User**: Non-root user `nodejs` (UID 1001) for security
+
+### Image Metadata (OCI Labels)
+
+The image includes comprehensive metadata for Docker Hub discovery:
+
+```dockerfile
+LABEL org.opencontainers.image.title="DDG Web Search MCP Server"
+LABEL org.opencontainers.image.description="A Model Context Protocol server..."
+LABEL org.opencontainers.image.vendor="DDG Web Search Contributors"
+LABEL org.mcp.transports="stdio,http"
+LABEL org.mcp.tools="search,fetch_web_content"
+```
+
+### Available Transports
+
+#### Stdio Transport (Default)
+
+```bash
+docker run -it realLV/ddg-web-search:latest node dist/mcp.js
+```
+
+**Use for:**
+
+- Direct client connections
+- Standard input/output streams
+- Local machine usage
+
+#### HTTP Transport (SSE)
+
+```bash
+docker run -p 3001:3001 realLV/ddg-web-search:latest \
+  node dist/mcp.js --transport http --port 3001 --host 0.0.0.0
+```
+
+**Use for:**
+
+- Remote server deployments
+- Multiple client connections
+- HTTP client integrations
+
 ## Publishing Multi-Architecture Images
 
-To support both AMD64 and ARM64 (M1/M2 Macs):
+To support both AMD64 and ARM64 (Intel/Apple Silicon):
 
 ### Setup Buildx (One Time)
 
@@ -142,10 +215,15 @@ make docker-publish-multiarch
 # Or manually
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
-  -t realLV/ddg-web-search:1.0.5 \
+  -t realLV/ddg-web-search:1.0.6 \
   -t realLV/ddg-web-search:latest \
   --push .
 ```
+
+This creates images for:
+
+- **linux/amd64**: Intel/AMD processors
+- **linux/arm64**: ARM processors (M1/M2/M3 Macs, ARM servers)
 
 ## Versioning Strategy
 
@@ -159,10 +237,10 @@ Follow semantic versioning (MAJOR.MINOR.PATCH):
 
 ### Tag Strategy
 
-For version `1.0.5`, create these tags:
+For version `1.0.6`, create these tags:
 
 ```bash
-realLV/ddg-web-search:1.0.5    # Exact version
+realLV/ddg-web-search:1.0.6    # Exact version
 realLV/ddg-web-search:1.0      # Minor version
 realLV/ddg-web-search:1        # Major version
 realLV/ddg-web-search:latest   # Latest stable
@@ -171,11 +249,11 @@ realLV/ddg-web-search:latest   # Latest stable
 Example:
 
 ```bash
-docker tag realLV/ddg-web-search:1.0.5 realLV/ddg-web-search:1.0
-docker tag realLV/ddg-web-search:1.0.5 realLV/ddg-web-search:1
-docker tag realLV/ddg-web-search:1.0.5 realLV/ddg-web-search:latest
+docker tag realLV/ddg-web-search:1.0.6 realLV/ddg-web-search:1.0
+docker tag realLV/ddg-web-search:1.0.6 realLV/ddg-web-search:1
+docker tag realLV/ddg-web-search:1.0.6 realLV/ddg-web-search:latest
 
-docker push realLV/ddg-web-search:1.0.5
+docker push realLV/ddg-web-search:1.0.6
 docker push realLV/ddg-web-search:1.0
 docker push realLV/ddg-web-search:1
 docker push realLV/ddg-web-search:latest
@@ -224,57 +302,76 @@ Before publishing to Docker Hub:
 - [ ] Push to Docker Hub
 - [ ] Verify on Docker Hub
 - [ ] Update README.md with new version
-- [ ] Create Git tag: `git tag v1.0.5`
-- [ ] Push tag: `git push origin v1.0.5`
+- [ ] Create Git tag: `git tag v1.0.6`
+- [ ] Push tag: `git push origin v1.0.6`
 
-## Usage After Publishing
+## Using Published Images
 
-Once published, users can pull and run:
+### Quick Start with Docker
+
+#### HTTP Server (Recommended)
 
 ```bash
-# Pull latest
-docker pull realLV/ddg-web-search:latest
-
-# Pull specific version
-docker pull realLV/ddg-web-search:1.0.5
-
-# Run HTTP server
-docker run -p 3001:3001 realLV/ddg-web-search:latest \
+docker run -d -p 3001:3001 \
+  --name ddg-mcp \
+  realLV/ddg-web-search:latest \
   node dist/mcp.js --transport http --port 3001 --host 0.0.0.0
 
-# Run CLI
+# Verify
+curl http://localhost:3001/
+```
+
+#### Stdio Server
+
+```bash
+docker run -it realLV/ddg-web-search:latest node dist/mcp.js
+```
+
+#### CLI Interactive
+
+```bash
 docker run -it realLV/ddg-web-search:latest node dist/cli.js interactive
 ```
 
-## Updating README.md
+### Using Docker Compose
 
-After publishing, update the README.md with Docker Hub information:
-
-````markdown
-## Docker Hub
-
-Pre-built Docker images are available on Docker Hub:
-
-### Quick Start with Docker Hub
+#### HTTP Transport
 
 ```bash
-# Pull and run HTTP server
-docker run -p 3001:3001 realLV/ddg-web-search:latest \
-  node dist/mcp.js --transport http --port 3001 --host 0.0.0.0
-
-# Pull and run CLI
-docker run -it realLV/ddg-web-search:latest node dist/cli.js interactive
+docker-compose --profile http up
 ```
-````
 
-### Available Tags
+#### Stdio Transport
 
-- `latest` - Latest stable release
-- `1.0.5` - Specific version
-- `1.0` - Latest 1.0.x release
-- `1` - Latest 1.x release
+```bash
+docker-compose --profile stdio up
+```
 
-Visit [Docker Hub](https://hub.docker.com/r/realLV/ddg-web-search) for all available tags.
+#### CLI
+
+```bash
+docker-compose --profile cli up
+```
+
+### Environment Variables
+
+```bash
+# Standard environment variables
+NODE_ENV=production                    # Default: production
+PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+```
+
+### Health Checks
+
+The image includes automatic health checks for HTTP transport:
+
+```bash
+# Check container health
+docker inspect --format='{{.State.Health.Status}}' ddg-mcp
+
+# Expected output: "healthy"
+```
 
 ````
 
@@ -346,10 +443,10 @@ docker login -u realLV --password-stdin < token.txt
 
 ```bash
 # Using Docker scan
-docker scan realLV/ddg-web-search:1.0.5
+docker scan realLV/ddg-web-search:1.0.6
 
 # Using Trivy
-trivy image realLV/ddg-web-search:1.0.5
+trivy image realLV/ddg-web-search:1.0.6
 ```
 
 ### 3. Sign Images (Optional)
@@ -358,7 +455,7 @@ Use Docker Content Trust:
 
 ```bash
 export DOCKER_CONTENT_TRUST=1
-docker push realLV/ddg-web-search:1.0.5
+docker push realLV/ddg-web-search:1.0.6
 ```
 
 ### 4. Keep Credentials Safe

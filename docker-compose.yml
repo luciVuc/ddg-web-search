@@ -2,28 +2,41 @@ version: "3.8"
 
 services:
   # MCP Server with stdio transport (default)
+  # Use this for stdio-based MCP client integrations
   ddg-mcp-stdio:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NODE_VERSION: "20"
+    image: realLV/ddg-web-search:latest
     container_name: ddg-web-search-mcp-stdio
     restart: unless-stopped
     environment:
       - NODE_ENV=production
       - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
     stdin_open: true
     tty: true
     # No ports exposed for stdio transport
     networks:
       - ddg-network
+    labels:
+      - "com.example.description=DDG Web Search MCP Server (Stdio)"
+      - "org.mcp.transport=stdio"
+      - "org.mcp.type=server"
     profiles:
       - stdio
 
   # MCP Server with HTTP transport
+  # Use this for HTTP-based integrations and remote access
   ddg-mcp-http:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NODE_VERSION: "20"
+    image: realLV/ddg-web-search:latest
     container_name: ddg-web-search-mcp-http
     restart: unless-stopped
     command:
@@ -40,10 +53,16 @@ services:
     environment:
       - NODE_ENV=production
       - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
     ports:
       - "3001:3001"
     networks:
       - ddg-network
+    labels:
+      - "com.example.description=DDG Web Search MCP Server (HTTP)"
+      - "org.mcp.transport=http"
+      - "org.mcp.type=server"
+      - "org.opencontainers.image.title=DDG Web Search MCP Server"
     healthcheck:
       test:
         [
@@ -60,19 +79,27 @@ services:
       - http
 
   # CLI service (for interactive usage)
+  # Use this for command-line interactions
   ddg-cli:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NODE_VERSION: "20"
+    image: realLV/ddg-web-search:latest
     container_name: ddg-web-search-cli
     command: ["node", "dist/cli.js", "interactive"]
     environment:
       - NODE_ENV=production
       - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
     stdin_open: true
     tty: true
     networks:
       - ddg-network
+    labels:
+      - "com.example.description=DDG Web Search CLI"
+      - "org.mcp.type=cli"
     profiles:
       - cli
 
